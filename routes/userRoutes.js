@@ -8,18 +8,18 @@ import {
   loginUser,
   resetPassword,
 } from "../controllers/userController.js";
-
+import { isValidUser } from "../middlewares/userValidatorMiddleware.js";
 const router = express.Router();
 
 // User routes
 router.post("/register", createUser);
-router.get("/", getAllUsers);
-router.get("/:id", getUserById);
-router.put("/:id", updateUser);
-router.delete("/:id", deleteUser);
+router.get("/users", isValidUser, getAllUsers);
+router.get("/:id", isValidUser, getUserById);
+router.put("/:id", isValidUser, updateUser);
+router.delete("/:id", isValidUser, deleteUser);
 
 // Authentication routes
 router.post("/login", loginUser);
-router.put("/reset-password/:userId", resetPassword);
+router.put("/reset-password/:userId", isValidUser, resetPassword);
 
 export default router;

@@ -4,7 +4,20 @@ import jwt from "jsonwebtoken";
 
 // Create a new user
 export const createUser = async (req, res) => {
-  const { username, email, password, role } = req.body;
+  console.log("Request Body:", req.body); // Log the incoming request body
+
+  const {
+    username,
+    email,
+    password,
+    role,
+    purchaseHistory,
+    subscription,
+    firstName,
+    lastName,
+    phone,
+    addresses,
+  } = req.body;
 
   try {
     // Check if user already exists
@@ -22,6 +35,12 @@ export const createUser = async (req, res) => {
       email,
       password: hashedPassword,
       role,
+      purchaseHistory,
+      subscription,
+      firstName,
+      lastName,
+      phone,
+      addresses,
     });
 
     await newUser.save();
@@ -58,28 +77,38 @@ export const getUserById = async (req, res) => {
   }
 };
 
-// Update a user by ID (excluding password update)
 export const updateUser = async (req, res) => {
-  const { id } = req.params;
-  const { username, email, role } = req.body;
-
   try {
-    // Check if user exists
-    const user = await User.findById(id);
-    if (!user) {
+    const { id } = req.params;
+    const {
+      purchaseHistory,
+      subscription,
+      firstName,
+      lastName,
+      phone,
+      addresses,
+    } = req.body;
+
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      {
+        purchaseHistory,
+        subscription,
+        firstName,
+        lastName,
+        phone,
+        addresses,
+      },
+      { new: true }
+    );
+
+    if (!updatedUser) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Update user details
-    user.username = username || user.username;
-    user.email = email || user.email;
-    user.role = role || user.role;
-
-    await user.save();
-
-    res.status(200).json({ message: "User updated successfully" });
+    res.status(200).json(updatedUser);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
 

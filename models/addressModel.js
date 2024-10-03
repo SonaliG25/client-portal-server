@@ -1,15 +1,15 @@
-const addressSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+import mongoose from "mongoose";
+
+const { Schema } = mongoose;
+
+// Define the Address Schema
+export const addressSchema = new Schema({
   street: { type: String, required: true },
   city: { type: String, required: true },
   state: { type: String, required: true },
   zipCode: { type: String, required: true },
   country: { type: String, required: true },
-  addressType: {
-    type: String,
-    enum: ["shipping", "billing"],
-    default: "shipping",
-  },
+  isDefault: { type: Boolean, default: false }, // To mark the default address
 });
 
-module.exports = mongoose.model("Address", addressSchema);
+export default mongoose.model("Address", addressSchema);

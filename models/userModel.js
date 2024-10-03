@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import { addressSchema } from "../models/addressModel.js";
 const { Schema } = mongoose;
 
 // Define the Product Schema (for purchase history)
@@ -25,6 +25,9 @@ const subscriptionSchema = new Schema({
 
 // User Schema
 const userSchema = new Schema({
+  firstName: { type: String, required: true },
+  lastName: { type: String, required: true },
+  phone: { type: String, required: true },
   username: {
     type: String,
     required: true,
@@ -46,8 +49,9 @@ const userSchema = new Schema({
     enum: ["client", "admin"],
     default: "client",
   },
-  purchaseHistory: [productSchema],
-  subscription: [subscriptionSchema],
+  addresses: { type: [addressSchema], default: [] },
+  purchaseHistory: { type: [productSchema], default: [] },
+  subscription: { type: [subscriptionSchema], default: [] },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });
