@@ -4,7 +4,7 @@ import express from "express";
 import mongoose from "mongoose";
 // import authRouter from "./routes/auth.route.js";
 // import adminRouter from "./routes/admin.route.js";
-// import vendorRouter from "./routes/vendor.route.js";
+import proposalRoutes from "./routes/proposalTemplatesRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 // import listingRoutes from "./routes/listing.route.js";
 import "dotenv/config";
@@ -44,7 +44,7 @@ mongoose
   .catch((err) => console.error("Error connecting to MongoDB", err));
 
 // Routes
-// app.use("/auth", authRouter);
+app.use("/proposal", proposalRoutes);
 app.use("/user", userRoutes);
 // app.use("/admin", adminRouter);
 // app.use("/vendor", vendorRouter);
