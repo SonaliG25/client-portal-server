@@ -10,10 +10,10 @@ import {
 const router = express.Router();
 
 // Create a new product
-router.post("/", createProduct);
+router.post("/newProduct", createProduct);
 
 // Get all products
-router.get("/", getAllProducts);
+router.get("/allProducts", getAllProducts);
 
 // Get a product by ID
 router.get("/:id", getProductById);

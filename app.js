@@ -6,7 +6,7 @@ import mongoose from "mongoose";
 // import adminRouter from "./routes/admin.route.js";
 import proposalRoutes from "./routes/proposalTemplatesRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
-// import listingRoutes from "./routes/listing.route.js";
+import productRoutes from "./routes/productRoutes.js";
 import "dotenv/config";
 // import path from "path";
 import cookieParser from "cookie-parser";
@@ -46,7 +46,7 @@ mongoose
 // Routes
 app.use("/proposal", proposalRoutes);
 app.use("/user", userRoutes);
-// app.use("/admin", adminRouter);
+app.use("/product", productRoutes);
 // app.use("/vendor", vendorRouter);
 // app.use("/api", apiRouter);
 // app.use("/listing", listingRoutes);
