@@ -7,6 +7,7 @@ import {
   deleteProduct,
 } from "../controllers/productController.js";
 
+import { isAdmin } from "../middlewares/userValidatorMiddleware.js";
 const router = express.Router();
 
 // Create a new product
