@@ -2,10 +2,13 @@
 
 import express from "express";
 import mongoose from "mongoose";
+///Routes
 import proposalRoutes from "./routes/productRoutes.js";
 import proposalTemplateRoutes from "./routes/proposalTemplatesRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
+import orderRoutes from "./routes/orderRoutes.js";
+///---End---///
 import "dotenv/config";
 // import path from "path";
 import cookieParser from "cookie-parser";
@@ -47,6 +50,7 @@ app.use("/proposal", proposalRoutes);
 app.use("/proposalTemplate", proposalTemplateRoutes);
 app.use("/user", userRoutes);
 app.use("/product", productRoutes);
+app.use("/order", orderRoutes);
 // app.use("/api", apiRouter);
 // app.use("/listing", listingRoutes);
 // // DELETE Route

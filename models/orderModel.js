@@ -47,7 +47,7 @@ const orderSchema = new Schema(
     },
     orderStatus: {
       type: String,
-      enum: ["processing", "shipped", "delivered", "cancelled"],
+      enum: ["processing", "delivered", "cancelled"],
       default: "processing",
       required: true,
     },

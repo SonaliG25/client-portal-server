@@ -22,19 +22,19 @@ const subscriptionSchema = new Schema({
     default: "active",
   },
 });
-// Define the UserType Enum
-const UserTypeEnum = Object.freeze({
-  LEAD: "lead",
-  PROSPECT: "prospect",
-  OPPORTUNITY: "opportunity",
-  CUSTOMER: "customer",
-  // FORMER_CUSTOMER: "former_customer",
-  // REFERRAL: "referral",
-  // SUSPECT: "suspect",
-  // CONTACT: "contact",
-  // INFLUENCER: "influencer",
-  // STAKEHOLDER: "stakeholder",
-});
+// // Define the UserType Enum
+// const UserTypeEnum = Object.freeze({
+//   LEAD: "lead",
+//   PROSPECT: "prospect",
+//   OPPORTUNITY: "opportunity",
+//   CUSTOMER: "customer",
+//   // FORMER_CUSTOMER: "former_customer",
+//   // REFERRAL: "referral",
+//   // SUSPECT: "suspect",
+//   // CONTACT: "contact",
+//   // INFLUENCER: "influencer",
+//   // STAKEHOLDER: "stakeholder",
+// });
 
 // User Schema
 const userSchema = new Schema({
@@ -43,8 +43,8 @@ const userSchema = new Schema({
   phone: { type: String, required: true },
   userType: {
     type: String,
-    enum: Object.values(UserTypeEnum), // Use the enum values here
-    required: true,
+    enum: ["lead", "prospect", "opportunity", "customer"],
+    default: "lead",
   },
   username: {
     type: String,

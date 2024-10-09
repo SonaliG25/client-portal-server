@@ -22,12 +22,17 @@ const proposalSchema = new Schema(
       ref: "User",
       required: true,
     },
+    emailTo: {
+      type: String,
+      required: true,
+      trim: true,
+    },
     title: {
       type: String,
       required: true,
       trim: true,
     },
-    template: {
+    content: {
       type: String, // The template text or structure for the proposal
       required: true,
     },

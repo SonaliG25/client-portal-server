@@ -17,7 +17,7 @@ const router = express.Router();
 router.post("/newProduct", isAdmin, createProduct);
 
 // Get all products
-router.get("/allProducts", isValidUser, getAllProducts);
+router.get("/getProducts", isValidUser, getAllProducts);
 
 // Get a product by ID
 router.get("/:id", isValidUser, getProductById);
