@@ -7,6 +7,12 @@ const purchaseTypes = ["one-time", "subscription"];
 // Product Schema
 const productSchema = new Schema(
   {
+    sku: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+    },
     name: {
       type: String,
       required: true,
@@ -17,14 +23,24 @@ const productSchema = new Schema(
       required: true,
       trim: true,
     },
-    price: {
+    purchasePrice: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+    mrp: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+    salePrice: {
       type: Number,
       required: true,
       min: 0,
     },
     stock: {
       type: Number,
-      required: true,
+      required: false,
       min: 0,
     },
     category: {
@@ -59,14 +75,14 @@ const productSchema = new Schema(
     keywords: {
       type: [String], // Array of keywords for search
     },
-    views: {
-      type: Number,
-      default: 0, // Tracks product views
-    },
-    salesCount: {
-      type: Number,
-      default: 0, // Tracks product sales
-    },
+    // views: {
+    //   type: Number,
+    //   default: 0, // Tracks product views
+    // },
+    // salesCount: {
+    //   type: Number,
+    //   default: 0, // Tracks product sales
+    // },
   },
   {
     timestamps: true, // Automatically creates createdAt and updatedAt fields

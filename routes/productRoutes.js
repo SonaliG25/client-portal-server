@@ -7,22 +7,25 @@ import {
   deleteProduct,
 } from "../controllers/productController.js";
 
-import { isAdmin } from "../middlewares/userValidatorMiddleware.js";
+import {
+  isAdmin,
+  isValidUser,
+} from "../middlewares/userValidatorMiddleware.js";
 const router = express.Router();
 
 // Create a new product
-router.post("/newProduct", createProduct);
+router.post("/newProduct", isAdmin, createProduct);
 
 // Get all products
-router.get("/allProducts", getAllProducts);
+router.get("/allProducts", isValidUser, getAllProducts);
 
 // Get a product by ID
-router.get("/:id", getProductById);
+router.get("/:id", isValidUser, getProductById);
 
 // Update a product by ID
-router.put("/:id", updateProduct);
+router.put("/:id", isAdmin, updateProduct);
 
 // Delete a product by ID
-router.delete("/:id", deleteProduct);
+router.delete("/:id", isAdmin, deleteProduct);
 
 export default router;

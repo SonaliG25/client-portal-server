@@ -2,9 +2,8 @@
 
 import express from "express";
 import mongoose from "mongoose";
-// import authRouter from "./routes/auth.route.js";
-// import adminRouter from "./routes/admin.route.js";
-import proposalRoutes from "./routes/proposalTemplatesRoutes.js";
+import proposalRoutes from "./routes/productRoutes.js";
+import proposalTemplateRoutes from "./routes/proposalTemplatesRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import "dotenv/config";
@@ -45,9 +44,9 @@ mongoose
 
 // Routes
 app.use("/proposal", proposalRoutes);
+app.use("/proposalTemplate", proposalTemplateRoutes);
 app.use("/user", userRoutes);
 app.use("/product", productRoutes);
-// app.use("/vendor", vendorRouter);
 // app.use("/api", apiRouter);
 // app.use("/listing", listingRoutes);
 // // DELETE Route
