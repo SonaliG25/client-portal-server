@@ -1,4 +1,6 @@
 // index.mjs
+import http from "http";
+import io from "./socketIO/socketServer.js"; // Importing the socket server setup
 
 import express from "express";
 import mongoose from "mongoose";
@@ -17,7 +19,11 @@ import cors from "cors";
 import bodyParser from "body-parser";
 // import jwt from "jsonwebtoken";
 const app = express();
+// Create an HTTP server
+// const server = http.createServer(app);
 
+// // Attach Socket.IO to the HTTP server
+// io.attach(server);
 const PORT = process.env.PORT || 3000;
 
 // Middleware

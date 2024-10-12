@@ -144,15 +144,26 @@ export const loginUser = async (req, res) => {
     if (!isPasswordCorrect) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
-
+    // Cookie age
+    const age = 1000 * 60 * 60 * 24 * 7;
     // Generate JWT token
     const token = jwt.sign(
       { userId: user._id, email: user.email, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: "1h" }
+      { expiresIn: age }
     );
-
-    res.status(200).json({ token, userId: user._id });
+    // const { password: userPassword, ...userInfo } = user.toObject();
+    // const userInfo = JSON.stringify(userData); // Convert userInfo object to JSON string
+    const userInfo = { userId: user._id, email: user.email, role: user.role };
+    // res
+    //   .cookie("token", token, {
+    //     httpOnly: true,
+    //     // secure:true,
+    //     maxAge: age,
+    //   })
+    //   .status(200)
+    //   .json(userInfo);
+    res.status(200).json({ token, userId: user._id, userInfo });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
