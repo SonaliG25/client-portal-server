@@ -15,6 +15,11 @@ const orderProductSchema = new Schema({
     default: "one-time",
     required: true,
   },
+  currency: {
+    type: String,
+    required: true,
+    default: "USD", // Set default currency, you can change this based on your requirements
+  },
 });
 
 // Define the Order Schema
@@ -61,6 +66,11 @@ const orderSchema = new Schema(
       required: true, // Total amount including shipping and products
       min: 0,
     },
+    totalAmountCurrency: {
+      type: String,
+      required: true,
+      default: "USD", // Currency for total amount
+    },
     discount: {
       type: Number,
       default: 0, // Any discount applied to the order
@@ -70,6 +80,11 @@ const orderSchema = new Schema(
       type: Number,
       required: true, // Grand total after discount
       min: 0,
+    },
+    grandTotalCurrency: {
+      type: String,
+      required: true,
+      default: "USD", // Currency for grand total
     },
     orderDate: {
       type: Date,

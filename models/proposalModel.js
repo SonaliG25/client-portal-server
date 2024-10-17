@@ -12,6 +12,11 @@ const selectedProductSchema = new Schema({
     enum: ["percentage", "fixed"],
     default: "fixed",
   },
+  currency: {
+    type: String,
+    required: true,
+    default: "USD", // Set default currency, you can change this based on your requirements
+  },
 });
 
 // Proposal Schema

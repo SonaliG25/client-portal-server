@@ -64,6 +64,11 @@ const productSchema = new Schema(
       required: true,
       default: "one-time", // Default value for purchase type
     },
+    currency: {
+      type: String,
+      required: true,
+      default: "USD", // Set default currency, you can change this based on your requirements
+    },
     isAvailable: {
       type: Boolean,
       required: true,

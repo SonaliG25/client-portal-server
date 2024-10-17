@@ -10,6 +10,7 @@ import proposalTemplateRoutes from "./routes/proposalTemplatesRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
+import invoiceRoutes from "./routes/invoiceRoutes.js";
 ///---End---///
 import "dotenv/config";
 // import path from "path";
@@ -57,7 +58,7 @@ app.use("/proposalTemplate", proposalTemplateRoutes);
 app.use("/user", userRoutes);
 app.use("/product", productRoutes);
 app.use("/order", orderRoutes);
-// app.use("/api", apiRouter);
+app.use("/invoice", invoiceRoutes);
 // app.use("/listing", listingRoutes);
 // // DELETE Route
 // app.delete("/test/category/:id", async (req, res) => {
