@@ -163,9 +163,7 @@ export const loginUser = async (req, res) => {
     //   })
     //   .status(200)
     //   .json(userInfo);
-    return res
-      .status(200)
-      .json({ token, userId: user._id, userInfo: userInfo });
+    return res.status(200).json({ token, userInfo: userInfo });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
