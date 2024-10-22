@@ -9,7 +9,7 @@ export const createProposal = async (req, res) => {
   }
 
   try {
-    const { recipient, title, template, products, discountOnGrandTotal } =
+    const { recipient, title, content,emailTo, products, discountOnGrandTotal } =
       req.body;
 
     // Calculate productTotal and grandTotal
@@ -24,7 +24,7 @@ export const createProposal = async (req, res) => {
     const newProposal = new Proposal({
       recipient,
       title,
-      template,
+      content,emailTo,
       products,
       productTotal,
       grandTotal,
@@ -76,7 +76,7 @@ export const updateProposal = async (req, res) => {
   }
 
   try {
-    const { recipient, title, template, products, discountOnGrandTotal } =
+    const { recipient, title, content, products, discountOnGrandTotal } =
       req.body;
 
     // Calculate productTotal and grandTotal
@@ -93,7 +93,7 @@ export const updateProposal = async (req, res) => {
       {
         recipient,
         title,
-        template,
+        content,emailTo,
         products,
         productTotal,
         grandTotal,

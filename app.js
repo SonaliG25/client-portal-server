@@ -5,7 +5,7 @@ import io from "./socketIO/socketServer.js"; // Importing the socket server setu
 import express from "express";
 import mongoose from "mongoose";
 ///Routes
-import proposalRoutes from "./routes/productRoutes.js";
+import proposalRoutes from "./routes/proposalRoutes.js";
 import proposalTemplateRoutes from "./routes/proposalTemplatesRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import productRoutes from "./routes/productRoutes.js";

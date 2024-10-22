@@ -62,6 +62,11 @@ const proposalSchema = new Schema(
       default: 0, // Discount applied to the grand total
       min: 0,
     },
+    grandTotalCurrency: {
+      type: String,
+      required: true,
+      default: "USD", // Set default currency for grand total
+    },
     finalAmount: {
       type: Number,
       required: true,
