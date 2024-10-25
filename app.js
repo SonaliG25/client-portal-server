@@ -2,14 +2,11 @@
 import http from "http";
 import io from "./socketIO/socketServer.js"; // Importing the socket server setup
 import path from "path";
-import { fileURLToPath } from 'url';
 
-// Get the current file's directory name
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 import express from "express";
 import mongoose from "mongoose";
 ///Routes
+import mediaRoutes from './routes/mediaRoutes.js';
 import proposalRoutes from "./routes/proposalRoutes.js";
 import proposalTemplateRoutes from "./routes/proposalTemplatesRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
@@ -60,6 +57,8 @@ mongoose
   .catch((err) => console.error("Error connecting to MongoDB", err));
 
 // Routes
+
+app.use('/media', mediaRoutes);
 app.use("/proposal", proposalRoutes);
 app.use("/proposalTemplate", proposalTemplateRoutes);
 app.use("/user", userRoutes);
