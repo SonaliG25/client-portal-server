@@ -86,6 +86,7 @@ export const updateUser = async (req, res) => {
       firstName,
       lastName,
       phone,
+      userType,
       addresses,
     } = req.body;
 
@@ -97,6 +98,7 @@ export const updateUser = async (req, res) => {
         firstName,
         lastName,
         phone,
+        userType,
         addresses,
       },
       { new: true }
