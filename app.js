@@ -6,6 +6,7 @@ import path from "path";
 import express from "express";
 import mongoose from "mongoose";
 ///Routes
+import categoryRouter from "./routes/categoryRoutes.js"
 import mediaRoutes from './routes/mediaRoutes.js';
 import proposalRoutes from "./routes/proposalRoutes.js";
 import proposalTemplateRoutes from "./routes/proposalTemplatesRoutes.js";
@@ -66,6 +67,7 @@ app.use("/product", productRoutes);
 app.use("/order", orderRoutes);
 app.use("/invoice", invoiceRoutes);
 app.use("/upload", uploadImageRouter);
+app.use("/category", categoryRouter);
 // // DELETE Route
 // app.delete("/test/category/:id", async (req, res) => {
 //   try {
