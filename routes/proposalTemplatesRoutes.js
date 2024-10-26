@@ -14,6 +14,6 @@ const router = express.Router();
 router.post("/new", isAdmin, createProposalTemplate); // Create a new template
 router.get("/templates", isAdmin, getAllTemplates); // Get all templates
 router.get("/templates/:templateId", isAdmin, getTemplateById); // Get a specific template
-router.put("/templates/:templateId", isAdmin, updateProposalTemplate); // Update a template
+router.patch("/templates/:templateId", isAdmin, updateProposalTemplate); // Update a template
 router.delete("/templates/:id", isAdmin, deleteProposalTemplate);
 export default router;

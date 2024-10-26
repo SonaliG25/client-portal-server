@@ -23,7 +23,7 @@ router.get("/getProducts", isValidUser, getAllProducts);
 router.get("/:id", isValidUser, getProductById);
 
 // Update a product by ID
-router.put("/:id", isAdmin, updateProduct);
+router.patch("/:id", isAdmin, updateProduct);
 
 // Delete a product by ID
 router.delete("/:id", isAdmin, deleteProduct);
