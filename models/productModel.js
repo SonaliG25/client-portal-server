@@ -50,13 +50,13 @@ const productSchema = new Schema(
     },
     imageUrl: {
       type: String,
-      trim: true,
-      validate: {
-        validator: function (v) {
-          return /^(ftp|http|https):\/\/[^ "]+$/.test(v);
-        },
-        message: (props) => `${props.value} is not a valid URL!`,
-      },
+      // trim: true,
+      // validate: {
+      //   validator: function (v) {
+      //     return /^(ftp|http|https):\/\/[^ "]+$/.test(v);
+      //   },
+      //   message: (props) => `${props.value} is not a valid URL!`,
+      // },
     },
     purchaseType: {
       type: String,
