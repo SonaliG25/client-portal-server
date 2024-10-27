@@ -50,19 +50,25 @@ const productSchema = new Schema(
     },
     imageUrl: {
       type: String,
-      trim: true,
-      validate: {
-        validator: function (v) {
-          return /^(ftp|http|https):\/\/[^ "]+$/.test(v);
-        },
-        message: (props) => `${props.value} is not a valid URL!`,
-      },
+      required:true,
+      // trim: true,
+      // validate: {
+      //   validator: function (v) {
+      //     return /^(ftp|http|https):\/\/[^ "]+$/.test(v);
+      //   },
+      //   message: (props) => `${props.value} is not a valid URL!`,
+      // },
     },
     purchaseType: {
       type: String,
       enum: purchaseTypes,
       required: true,
       default: "one-time", // Default value for purchase type
+    },
+    currency: {
+      type: String,
+      required: true,
+      default: "USD", // Set default currency, you can change this based on your requirements
     },
     isAvailable: {
       type: Boolean,

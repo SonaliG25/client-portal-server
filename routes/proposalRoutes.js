@@ -6,13 +6,13 @@ import {
   updateProposal,
   deleteProposal,
 } from "../controllers/proposalController.js";
-import { validateProposal } from "../middlewares/validationMiddleware.js";
+import { validateProposal } from "../middlewares/validateProposalMiddleware.js";
 import { isAdmin } from "../middlewares/userValidatorMiddleware.js";
 
 const router = express.Router();
 
 // Route to create a proposal
-router.post("/newProposal", isAdmin, validateProposal, createProposal);
+router.post("/new", isAdmin, validateProposal, createProposal);
 
 // Route to get all proposals
 router.get("/getAllProposals", isAdmin, getAllProposals);

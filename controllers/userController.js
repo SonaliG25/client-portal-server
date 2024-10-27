@@ -54,7 +54,7 @@ export const createUser = async (req, res) => {
 // Get all users (excluding passwords)
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find().select("-password");
+    const users = await User.find({ role: "client" }).select("-password");
     res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -86,6 +86,7 @@ export const updateUser = async (req, res) => {
       firstName,
       lastName,
       phone,
+      userType,
       addresses,
     } = req.body;
 
@@ -97,6 +98,7 @@ export const updateUser = async (req, res) => {
         firstName,
         lastName,
         phone,
+        userType,
         addresses,
       },
       { new: true }
@@ -150,7 +152,7 @@ export const loginUser = async (req, res) => {
     const token = jwt.sign(
       { userId: user._id, email: user.email, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: age }
+      { expiresIn: "1d" }
     );
     // const { password: userPassword, ...userInfo } = user.toObject();
     // const userInfo = JSON.stringify(userData); // Convert userInfo object to JSON string
@@ -163,7 +165,9 @@ export const loginUser = async (req, res) => {
     //   })
     //   .status(200)
     //   .json(userInfo);
-    return res.status(200).json({ token, userId: user._id, userInfo });
+    return res
+      .status(200)
+      .json({ token, userId: user._id, userInfo: userInfo });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

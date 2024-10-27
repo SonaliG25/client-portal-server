@@ -1,15 +1,20 @@
 // index.mjs
 import http from "http";
 import io from "./socketIO/socketServer.js"; // Importing the socket server setup
+import path from "path";
 
 import express from "express";
 import mongoose from "mongoose";
 ///Routes
-import proposalRoutes from "./routes/productRoutes.js";
+import categoryRouter from "./routes/categoryRoutes.js"
+import mediaRoutes from './routes/mediaRoutes.js';
+import proposalRoutes from "./routes/proposalRoutes.js";
 import proposalTemplateRoutes from "./routes/proposalTemplatesRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
+import invoiceRoutes from "./routes/invoiceRoutes.js";
+import uploadImageRouter from "./routes/uploadImageRoute.js";
 ///---End---///
 import "dotenv/config";
 // import path from "path";
@@ -41,9 +46,10 @@ app.use(express.json());
 // Middleware to parse URL-encoded request bodies
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-
+// Serve static files from the 'uploads' directory
 app.use(bodyParser.json());
 app.use(express.static("public"));
+// app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Connect to MongoDB
 mongoose
@@ -52,13 +58,16 @@ mongoose
   .catch((err) => console.error("Error connecting to MongoDB", err));
 
 // Routes
+
+app.use('/media', mediaRoutes);
 app.use("/proposal", proposalRoutes);
 app.use("/proposalTemplate", proposalTemplateRoutes);
 app.use("/user", userRoutes);
 app.use("/product", productRoutes);
 app.use("/order", orderRoutes);
-// app.use("/api", apiRouter);
-// app.use("/listing", listingRoutes);
+app.use("/invoice", invoiceRoutes);
+app.use("/upload", uploadImageRouter);
+app.use("/category", categoryRouter);
 // // DELETE Route
 // app.delete("/test/category/:id", async (req, res) => {
 //   try {

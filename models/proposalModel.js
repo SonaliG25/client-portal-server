@@ -12,6 +12,11 @@ const selectedProductSchema = new Schema({
     enum: ["percentage", "fixed"],
     default: "fixed",
   },
+  currency: {
+    type: String,
+    required: true,
+    default: "USD", // Set default currency, you can change this based on your requirements
+  },
 });
 
 // Proposal Schema
@@ -56,6 +61,11 @@ const proposalSchema = new Schema(
       type: Number,
       default: 0, // Discount applied to the grand total
       min: 0,
+    },
+    grandTotalCurrency: {
+      type: String,
+      required: true,
+      default: "USD", // Set default currency for grand total
     },
     finalAmount: {
       type: Number,

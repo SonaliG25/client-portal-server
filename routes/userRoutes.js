@@ -15,11 +15,11 @@ const router = express.Router();
 router.post("/register", createUser);
 router.get("/users", isValidUser, getAllUsers);
 router.get("/:id", isValidUser, getUserById);
-router.put("/:id", isValidUser, updateUser);
+router.patch("/:id", isValidUser, updateUser);
 router.delete("/:id", isValidUser, deleteUser);
 
 // Authentication routes
 router.post("/login", loginUser);
-router.put("/reset-password/:userId", isValidUser, resetPassword);
+router.patch("/reset-password/:userId", isValidUser, resetPassword);
 
 export default router;

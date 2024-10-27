@@ -71,8 +71,10 @@ const userSchema = new Schema({
   addresses: { type: [addressSchema], default: [] },
   purchaseHistory: { type: [productSchema], default: [] },
   subscription: { type: [subscriptionSchema], default: [] },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
+ 
+},
+{
+  timestamps: true, // Automatically creates createdAt and updatedAt fields
 });
 
 // Middleware to update timestamps
