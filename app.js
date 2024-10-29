@@ -6,8 +6,8 @@ import path from "path";
 import express from "express";
 import mongoose from "mongoose";
 ///Routes
-import categoryRouter from "./routes/categoryRoutes.js"
-import mediaRoutes from './routes/mediaRoutes.js';
+import categoryRouter from "./routes/categoryRoutes.js";
+import mediaRoutes from "./routes/mediaRoutes.js";
 import proposalRoutes from "./routes/proposalRoutes.js";
 import proposalTemplateRoutes from "./routes/proposalTemplatesRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
@@ -49,7 +49,10 @@ app.use(cookieParser());
 // Serve static files from the 'uploads' directory
 app.use(bodyParser.json());
 app.use(express.static("public"));
-// app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Serve static files from the uploads directory
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+// app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Connect to MongoDB
 mongoose
@@ -59,7 +62,7 @@ mongoose
 
 // Routes
 
-app.use('/media', mediaRoutes);
+app.use("/media", mediaRoutes);
 app.use("/proposal", proposalRoutes);
 app.use("/proposalTemplate", proposalTemplateRoutes);
 app.use("/user", userRoutes);
@@ -68,22 +71,6 @@ app.use("/order", orderRoutes);
 app.use("/invoice", invoiceRoutes);
 app.use("/upload", uploadImageRouter);
 app.use("/category", categoryRouter);
-// // DELETE Route
-// app.delete("/test/category/:id", async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const deletedCategory = await Category.findByIdAndDelete(id);
-
-//     if (!deletedCategory) {
-//       return res.status(404).json({ message: "Category not found" });
-//     }
-
-//     res.status(200).json({ message: "Category deleted successfully" });
-//   } catch (error) {
-//     console.error("Error deleting category:", error);
-//     res.status(500).json({ message: "Internal server error" });
-//   }
-// });
 app.get("/", (req, res) => {
   res.json("Api is running successfully");
 });

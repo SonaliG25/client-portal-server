@@ -152,19 +152,10 @@ export const loginUser = async (req, res) => {
     const token = jwt.sign(
       { userId: user._id, email: user.email, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: "1d" }
+      { expiresIn: age }
     );
-    // const { password: userPassword, ...userInfo } = user.toObject();
-    // const userInfo = JSON.stringify(userData); // Convert userInfo object to JSON string
     const userInfo = { userId: user._id, email: user.email, role: user.role };
-    // res
-    //   .cookie("token", token, {
-    //     httpOnly: true,
-    //     // secure:true,
-    //     maxAge: age,
-    //   })
-    //   .status(200)
-    //   .json(userInfo);
+
     return res
       .status(200)
       .json({ token, userId: user._id, userInfo: userInfo });
@@ -173,15 +164,9 @@ export const loginUser = async (req, res) => {
   }
 };
 
-// // Logout user (for token-based authentication, logout is handled client-side)
-// // Optionally, you could implement a token blacklist, but here logout is client-side.
-// export const logoutUser = (req, res) => {
-//   res.status(200).json({ message: 'Logged out successfully' });
-// };
-
 // Reset password
 export const resetPassword = async (req, res) => {
-  const { userId } = req.params; // Assumes user is authenticated and the userId is passed as param
+  const { userId } = req.params;
   const { oldPassword, newPassword } = req.body;
 
   try {

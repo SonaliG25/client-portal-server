@@ -16,7 +16,13 @@ export const createCategory = async (req, res) => {
 export const getCategories = async (req, res) => {
   try {
     const categories = await Category.find();
-    res.json(categories);
+    // Map the categories to include only the name property
+    const formattedCategories = categories.map((category) => ({
+      name: category.name, // Include additional fields if necessary
+    }));
+
+    // Send the response with the wrapped categories array
+    res.json({ categories: formattedCategories });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -27,7 +33,7 @@ export const getCategoryById = async (req, res) => {
   try {
     const category = await Category.findById(req.params.id);
     if (!category) {
-      return res.status(404).json({ error: 'Category not found' });
+      return res.status(404).json({ error: "Category not found" });
     }
     res.json(category);
   } catch (error) {
@@ -43,7 +49,7 @@ export const updateCategory = async (req, res) => {
       runValidators: true,
     });
     if (!category) {
-      return res.status(404).json({ error: 'Category not found' });
+      return res.status(404).json({ error: "Category not found" });
     }
     res.json(category);
   } catch (error) {
@@ -56,9 +62,9 @@ export const deleteCategory = async (req, res) => {
   try {
     const category = await Category.findByIdAndDelete(req.params.id);
     if (!category) {
-      return res.status(404).json({ error: 'Category not found' });
+      return res.status(404).json({ error: "Category not found" });
     }
-    res.json({ message: 'Category deleted successfully' });
+    res.json({ message: "Category deleted successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
