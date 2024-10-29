@@ -1,6 +1,7 @@
 import User from "../models/userModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { sendmail } from "../Helper/sendmail.js";
 
 // Create a new user
 export const createUser = async (req, res) => {
@@ -44,6 +45,12 @@ export const createUser = async (req, res) => {
     });
 
     await newUser.save();
+    sendmail(
+      email,
+      "Welcom to our Client-portal website",
+      `Hi ${firstName} Thank for register`,
+      `<p>Hi <strong>${firstName}</strong>,</p><p>Thank you for registering on our Client-portal website!</p>`
+    );
 
     res.status(201).json({ message: "User created successfully" });
   } catch (error) {
