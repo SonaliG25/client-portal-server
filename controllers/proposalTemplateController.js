@@ -16,11 +16,31 @@ export const createProposalTemplate = async (req, res) => {
 
 // Get all templates
 export const getAllTemplates = async (req, res) => {
+  const { page = 1, limit = 10, search = '' } = req.query;
+
   try {
-    const templates = await ProposalTemplate.find();
-    res.status(200).json(templates);
+    const query = {
+      $or: [
+        { title: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } },
+        { status: { $regex: search, $options: 'i' } },
+
+      ],
+    };
+
+    const totalTemplates = await ProposalTemplate.countDocuments(query);
+    const templates = await ProposalTemplate.find(query)
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .exec();
+
+    res.json({
+      totalPages: Math.ceil(totalTemplates / limit),
+      currentPage: page,
+      templates,
+    });
   } catch (error) {
-    res.status(500).json({ message: "Error fetching templates", error });
+    res.status(500).json({ message: error.message });
   }
 };
 
