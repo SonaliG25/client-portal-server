@@ -6,9 +6,11 @@ const proposalTemplateSchema = new Schema({
   title: { type: String, required: true },
   description: { type: String },
   status: { type: String, default: "draft" },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
-});
+},
+{
+  timestamps: true, // Automatically creates createdAt and updatedAt fields
+}
+);
 
 // Middleware to update timestamps
 proposalTemplateSchema.pre("save", function (next) {

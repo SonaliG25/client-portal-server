@@ -15,11 +15,41 @@ export const createProduct = async (req, res) => {
 // Get all products
 export const getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find();
-    res.status(200).json(products);
+    const { page = 1, limit = 10, search = '' } = req.query;
+
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+
+    
+    const searchRegex = new RegExp(search, 'i'); 
+    const query = {
+      $or: [
+        { name: { $regex: searchRegex } },
+        { description: { $regex: searchRegex } },
+        { tags: { $regex: searchRegex } },
+        { keywords: { $regex: searchRegex } },
+      ],
+    };
+
+  
+    const totalProducts = await Product.countDocuments(query);
+
+    
+    const products = await Product.find(query)
+      .limit(limitNumber)
+      .skip((pageNumber - 1) * limitNumber)
+      .exec();
+
+    
+    res.status(200).json({
+      total: totalProducts,
+      page: pageNumber,
+      totalPages: Math.ceil(totalProducts / limitNumber),
+      products,
+    });
   } catch (error) {
-    console.error("Error retrieving products:", error);
-    res.status(500).json({ message: "Failed to retrieve products" });
+    console.error('Error fetching products:', error);
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
