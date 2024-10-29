@@ -23,7 +23,6 @@ export const createCategory = async (req, res) => {
 // };
 export const getCategories = async (req, res) => {
   try {
-    // Extract query parameters
     const page = parseInt(req.query.page) || 1; // Current page (default is 1)
     const limit = parseInt(req.query.limit) || 5; // Items per page (default is 10)
     const search = req.query.search ? req.query.search.toLowerCase() : ""; // Search term
@@ -59,12 +58,12 @@ export const getCategories = async (req, res) => {
   }
 };
 
-
 // Get a single category by ID
 export const getCategoryById = async (req, res) => {
   try {
     const category = await Category.findById(req.params.id);
     if (!category) {
+      return res.status(404).json({ error: "Category not found" });
       return res.status(404).json({ error: "Category not found" });
     }
     res.json(category);
@@ -82,6 +81,7 @@ export const updateCategory = async (req, res) => {
     });
     if (!category) {
       return res.status(404).json({ error: "Category not found" });
+      return res.status(404).json({ error: "Category not found" });
     }
     res.json(category);
   } catch (error) {
@@ -95,7 +95,9 @@ export const deleteCategory = async (req, res) => {
     const category = await Category.findByIdAndDelete(req.params.id);
     if (!category) {
       return res.status(404).json({ error: "Category not found" });
+      return res.status(404).json({ error: "Category not found" });
     }
+    res.json({ message: "Category deleted successfully" });
     res.json({ message: "Category deleted successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
