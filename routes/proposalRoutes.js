@@ -7,7 +7,10 @@ import {
   deleteProposal,
 } from "../controllers/proposalController.js";
 import { validateProposal } from "../middlewares/validateProposalMiddleware.js";
-import { isAdmin } from "../middlewares/userValidatorMiddleware.js";
+import {
+  isAdmin,
+  isValidUser,
+} from "../middlewares/userValidatorMiddleware.js";
 
 const router = express.Router();
 
@@ -15,13 +18,13 @@ const router = express.Router();
 router.post("/new", isAdmin, validateProposal, createProposal);
 
 // Route to get all proposals
-router.get("/getAllProposals", isAdmin, getAllProposals);
+router.get("/getAllProposals", isValidUser, getAllProposals);
 
 // Route to get a single proposal by ID
-router.get("/:id", isAdmin, getProposalById);
+router.get("/:id", isValidUser, getProposalById);
 
 // Route to update a proposal by ID
-router.put("/:id", isAdmin, validateProposal, updateProposal);
+router.patch("/:id", isAdmin, validateProposal, updateProposal);
 
 // Route to delete a proposal by ID
 router.delete("/:id", isAdmin, deleteProposal);

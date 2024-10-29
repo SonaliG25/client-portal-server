@@ -1,16 +1,20 @@
 // index.mjs
 import http from "http";
 import io from "./socketIO/socketServer.js"; // Importing the socket server setup
+import path from "path";
 
 import express from "express";
 import mongoose from "mongoose";
 ///Routes
+import categoryRouter from "./routes/categoryRoutes.js";
+import mediaRoutes from "./routes/mediaRoutes.js";
 import proposalRoutes from "./routes/proposalRoutes.js";
 import proposalTemplateRoutes from "./routes/proposalTemplatesRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import invoiceRoutes from "./routes/invoiceRoutes.js";
+import uploadImageRouter from "./routes/uploadImageRoute.js";
 ///---End---///
 import "dotenv/config";
 // import path from "path";
@@ -42,9 +46,13 @@ app.use(express.json());
 // Middleware to parse URL-encoded request bodies
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-
+// Serve static files from the 'uploads' directory
 app.use(bodyParser.json());
 app.use(express.static("public"));
+
+// Serve static files from the uploads directory
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+// app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Connect to MongoDB
 mongoose
@@ -53,29 +61,16 @@ mongoose
   .catch((err) => console.error("Error connecting to MongoDB", err));
 
 // Routes
+
+app.use("/media", mediaRoutes);
 app.use("/proposal", proposalRoutes);
 app.use("/proposalTemplate", proposalTemplateRoutes);
 app.use("/user", userRoutes);
 app.use("/product", productRoutes);
 app.use("/order", orderRoutes);
 app.use("/invoice", invoiceRoutes);
-// app.use("/listing", listingRoutes);
-// // DELETE Route
-// app.delete("/test/category/:id", async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const deletedCategory = await Category.findByIdAndDelete(id);
-
-//     if (!deletedCategory) {
-//       return res.status(404).json({ message: "Category not found" });
-//     }
-
-//     res.status(200).json({ message: "Category deleted successfully" });
-//   } catch (error) {
-//     console.error("Error deleting category:", error);
-//     res.status(500).json({ message: "Internal server error" });
-//   }
-// });
+app.use("/upload", uploadImageRouter);
+app.use("/category", categoryRouter);
 app.get("/", (req, res) => {
   res.json("Api is running successfully");
 });

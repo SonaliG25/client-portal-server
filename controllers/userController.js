@@ -54,7 +54,7 @@ export const createUser = async (req, res) => {
 // Get all users (excluding passwords)
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find().select("-password");
+    const users = await User.find({ role: "client" }).select("-password");
     res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -86,6 +86,7 @@ export const updateUser = async (req, res) => {
       firstName,
       lastName,
       phone,
+      userType,
       addresses,
     } = req.body;
 
@@ -97,6 +98,7 @@ export const updateUser = async (req, res) => {
         firstName,
         lastName,
         phone,
+        userType,
         addresses,
       },
       { new: true }
@@ -152,17 +154,8 @@ export const loginUser = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: age }
     );
-    // const { password: userPassword, ...userInfo } = user.toObject();
-    // const userInfo = JSON.stringify(userData); // Convert userInfo object to JSON string
     const userInfo = { userId: user._id, email: user.email, role: user.role };
-    // res
-    //   .cookie("token", token, {
-    //     httpOnly: true,
-    //     // secure:true,
-    //     maxAge: age,
-    //   })
-    //   .status(200)
-    //   .json(userInfo);
+
     return res
       .status(200)
       .json({ token, userId: user._id, userInfo: userInfo });
@@ -171,15 +164,9 @@ export const loginUser = async (req, res) => {
   }
 };
 
-// // Logout user (for token-based authentication, logout is handled client-side)
-// // Optionally, you could implement a token blacklist, but here logout is client-side.
-// export const logoutUser = (req, res) => {
-//   res.status(200).json({ message: 'Logged out successfully' });
-// };
-
 // Reset password
 export const resetPassword = async (req, res) => {
-  const { userId } = req.params; // Assumes user is authenticated and the userId is passed as param
+  const { userId } = req.params;
   const { oldPassword, newPassword } = req.body;
 
   try {

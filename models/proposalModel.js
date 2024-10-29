@@ -27,12 +27,12 @@ const proposalSchema = new Schema(
       ref: "User",
       required: true,
     },
-    emailTo: {
+    emailTo: { //Proposed To
       type: String,
       required: true,
       trim: true,
     },
-    title: {
+    title: { //
       type: String,
       required: true,
       trim: true,
@@ -77,7 +77,7 @@ const proposalSchema = new Schema(
     timestamps: true, // Automatically creates createdAt and updatedAt fields
   }
 );
-
+//Table Structure (Proposed To, Title, SentOn{CreatedOn} | View |Edit |)
 // Middleware to update timestamps
 proposalSchema.pre("save", function (next) {
   this.updatedAt = Date.now();
