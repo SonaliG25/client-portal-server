@@ -23,7 +23,7 @@ router.get("/allOrders", isValidUser, getOrders);
 router.get("/:id", isValidUser, getOrder);
 
 // Update an order by ID
-router.put("/:id", isAdmin, updateOrder);
+router.patch("/:id", isAdmin, updateOrder);
 
 // Delete an order by ID
 router.delete("/:id", isAdmin, deleteOrder);
