@@ -108,10 +108,43 @@ export const createUser = async (req, res) => {
 // };
 
 // Get all users (excluding passwords)
+
+//for searching and pagination
+
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find({ role: "client" }).select("-password");
-    res.status(200).json(users);
+    const { page = 1, limit = 5, search = "" } = req.query;
+
+    // Pagination setup
+    const startIndex = (page - 1) * limit;
+
+    // Search criteria
+    const searchCriteria = {
+      role: "client",
+      $or: [
+        { firstName: { $regex: search, $options: "i" } },
+        { lastName: { $regex: search, $options: "i" } },
+        { phone: { $regex: search, $options: "i" } },
+        { userType: { $regex: search, $options: "i" } },
+        { "subscription.length": { $regex: search, $options: "i" } },
+      ],
+    };
+
+    // Fetch users based on search criteria and pagination
+    const users = await User.find(searchCriteria)
+      .select("-password") // Exclude password field
+      .skip(startIndex) // Skip documents for pagination
+      .limit(parseInt(limit)); // Limit documents per page
+
+    // Get total count for pagination metadata
+    const totalUsers = await User.countDocuments(searchCriteria);
+
+    res.status(200).json({
+      data: users,
+      currentPage: parseInt(page),
+      totalPages: Math.ceil(totalUsers / limit),
+      totalUsers,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
