@@ -37,45 +37,47 @@ const subscriptionSchema = new Schema({
 // });
 
 // User Schema
-const userSchema = new Schema({
-  firstName: { type: String, required: true },
-  lastName: { type: String, required: true },
-  phone: { type: String, required: true },
-  userType: {
-    type: String,
-    enum: ["lead", "prospect", "opportunity", "customer"],
-    default: "lead",
+const userSchema = new Schema(
+  {
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
+    phone: { type: String, required: true },
+    userType: {
+      type: String,
+      enum: ["lead", "prospect", "opportunity", "customer"],
+      default: "lead",
+    },
+    // account_owner , authforbilling :
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    role: {
+      type: String,
+      enum: ["client", "admin", "manager", "developer"],
+      default: "client",
+    },
+    ///add usertype : prospect,users
+    addresses: { type: [addressSchema], default: [] },
+    purchaseHistory: { type: [productSchema], default: [] },
+    subscription: { type: [subscriptionSchema], default: [] },
   },
-  username: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  role: {
-    type: String,
-    enum: ["client", "admin", "manager", "developer"],
-    default: "client",
-  },
-  ///add usertype : prospect,users
-  addresses: { type: [addressSchema], default: [] },
-  purchaseHistory: { type: [productSchema], default: [] },
-  subscription: { type: [subscriptionSchema], default: [] },
- 
-},
-{
-  timestamps: true, // Automatically creates createdAt and updatedAt fields
-});
+  {
+    timestamps: true, // Automatically creates createdAt and updatedAt fields
+  }
+);
 
 // Middleware to update timestamps
 userSchema.pre("save", function (next) {
