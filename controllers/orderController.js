@@ -14,10 +14,42 @@ export const createOrder = async (req, res) => {
 // READ (Get All Orders)
 export const getOrders = async (req, res) => {
   try {
-    const orders = await Order.find().populate("customer").exec();
-    return res.status(200).json(orders);
+   
+    const { page = 1, limit = 10, search = "" } = req.query;
+
+    const pageNumber = parseInt(page);
+    const limitNumber = parseInt(limit);
+
+    const searchQuery = search
+      ? {
+          $or: [
+            { "customer.name": { $regex: search, $options: "i" } }, 
+            { orderStatus: { $regex: search, $options: "i" } }, 
+            { "products.name": { $regex: search, $options: "i" } },
+          ],
+        }
+      : {};
+
+    
+    const orders = await Order.find(searchQuery)
+      .populate("customer") 
+      .skip((pageNumber - 1) * limitNumber) 
+      .limit(limitNumber) 
+      .sort({ createdAt: -1 }) 
+      .exec()
+   
+    const totalOrders = await Order.countDocuments(searchQuery);
+
+    res.status(200).json({
+      success: true,
+      data: orders,
+      currentPage: pageNumber,
+      totalPages: Math.ceil(totalOrders / limitNumber),
+      totalOrders,
+    });
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server Error" });
   }
 };
 

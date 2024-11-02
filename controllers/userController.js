@@ -1,6 +1,7 @@
 import User from "../models/userModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { sendmail } from "../Helper/sendmail.js";
 
 // Create a new user
 export const createUser = async (req, res) => {
@@ -44,18 +45,106 @@ export const createUser = async (req, res) => {
     });
 
     await newUser.save();
+    sendmail(
+      email,
+      "Welcom to our Client-portal website",
+      `Hi ${firstName} Thank for register`,
+      `<p>Hi <strong>${firstName}</strong>,</p><p>Thank you for registering on our Client-portal website!</p>`
+    );
 
     res.status(201).json({ message: "User created successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+// export const createUser = async (req, res) => {
+//   console.log("Request Body:", req.body); // Log the incoming request body
+
+//   const {
+//     username,
+//     email,
+//     password,
+//     role,
+//     purchaseHistory,
+//     subscription,
+//     firstName,
+//     lastName,
+//     phone,
+//     addresses,
+//   } = req.body;
+
+//   try {
+//     // Hash the password
+//     const hashedPassword = await bcrypt.hash(password, 12);
+
+//     // Create or update user if they already exist
+//     const user = await User.findOneAndUpdate(
+//       { email },
+//       {
+//         username,
+//         password: hashedPassword,
+//         role,
+//         purchaseHistory,
+//         subscription,
+//         firstName,
+//         lastName,
+//         phone,
+//         addresses,
+//       },
+//       { new: true, upsert: true }
+//     );
+
+//     sendmail(
+//       email,
+//       "Welcome to our Client-portal website",
+//       `Hi ${firstName}, thank you for registering!`,
+//       `<p>Hi <strong>${firstName}</strong>,</p><p>Thank you for registering on our Client-portal website!</p>`
+//     );
+
+//     res.status(201).json({ message: "User saved successfully" });
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
 
 // Get all users (excluding passwords)
+
+//for searching and pagination
+
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find({ role: "client" }).select("-password");
-    res.status(200).json(users);
+    const { page = 1, limit = 5, search = "" } = req.query;
+
+    // Pagination setup
+    const startIndex = (page - 1) * limit;
+
+    // Search criteria
+    const searchCriteria = {
+      role: "client",
+      $or: [
+        { firstName: { $regex: search, $options: "i" } },
+        { lastName: { $regex: search, $options: "i" } },
+        { phone: { $regex: search, $options: "i" } },
+        { userType: { $regex: search, $options: "i" } },
+        { "subscription.length": { $regex: search, $options: "i" } },
+      ],
+    };
+
+    // Fetch users based on search criteria and pagination
+    const users = await User.find(searchCriteria)
+      .select("-password") // Exclude password field
+      .skip(startIndex) // Skip documents for pagination
+      .limit(parseInt(limit)); // Limit documents per page
+
+    // Get total count for pagination metadata
+    const totalUsers = await User.countDocuments(searchCriteria);
+
+    res.status(200).json({
+      data: users,
+      currentPage: parseInt(page),
+      totalPages: Math.ceil(totalUsers / limit),
+      totalUsers,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
