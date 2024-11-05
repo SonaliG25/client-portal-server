@@ -38,33 +38,29 @@
 // export { sendmail };
 // Import nodemailer
 import nodemailer from "nodemailer";
-
+import "dotenv/config";
 // Configure the transporter
 const transporter = nodemailer.createTransport({
   host: "smtp.hostinger.com", // Hostinger SMTP server
   port: 465, // Port for secure connection
   secure: true, // true for port 465, false for port 587
   auth: {
-    user: "your-email@yourdomain.com", // Your Hostinger email address
-    pass: "your-email-password", // Your Hostinger email password
+    user: process.env.EMAIL_ID, // Your Hostinger email address
+    pass: process.env.EMAIL_PASSWORD, // Your Hostinger email password
   },
 });
 
 // Function to send email
-async function sendmail(to, subject, text, html) {
+async function sendmail(to, subject, html, attachments) {
+  // text, html) {
   try {
     const info = await transporter.sendMail({
-      from: "your-email@yourdomain.com", // sender address (should match Hostinger email)
+      from: process.env.EMAIL_ID, // sender address (should match Hostinger email)
       to,
       subject,
-      text,
+      // text,
       html,
-      attachments: [
-        {
-          filename: "photo", // File name to display in the email
-          path: "./file/sohil.txt", // Path to the file (e.g., "./files/example.pdf")
-        },
-      ],
+      attachments: attachments,
     });
     console.log("Message sent: %s", info.messageId); // Log the sent message ID
   } catch (error) {

@@ -1,6 +1,8 @@
 import Proposal from "../models/proposalModel.js";
 import { validationResult } from "express-validator";
 
+import { sendmail } from "../Helper/sendmail.js";
+
 // Create a new proposal
 export const createProposal = async (req, res) => {
   const errors = validationResult(req);
@@ -9,8 +11,15 @@ export const createProposal = async (req, res) => {
   }
 
   try {
-    const { recipient, title, content,emailTo, products, discountOnGrandTotal } =
-      req.body;
+    const {
+      recipient,
+      title,
+      content,
+      emailTo,
+      products,
+      discountOnGrandTotal,
+      attachments,
+    } = req.body;
 
     // Calculate productTotal and grandTotal
     let productTotal = 0;
@@ -24,7 +33,8 @@ export const createProposal = async (req, res) => {
     const newProposal = new Proposal({
       recipient,
       title,
-      content,emailTo,
+      content,
+      emailTo,
       products,
       productTotal,
       grandTotal,
@@ -33,6 +43,7 @@ export const createProposal = async (req, res) => {
     });
 
     const savedProposal = await newProposal.save();
+    sendmail(emailTo, title, content, attachments);
     res.status(201).json(savedProposal);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -93,7 +104,8 @@ export const updateProposal = async (req, res) => {
       {
         recipient,
         title,
-        content,emailTo,
+        content,
+        emailTo,
         products,
         productTotal,
         grandTotal,
@@ -127,3 +139,5 @@ export const deleteProposal = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+export const sendEmailToClient = (req, res) => {};

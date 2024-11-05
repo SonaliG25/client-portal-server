@@ -14,7 +14,7 @@ import userRoutes from "./routes/userRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import invoiceRoutes from "./routes/invoiceRoutes.js";
-import uploadImageRouter from "./routes/uploadImageRoute.js";
+import uploadRouter from "./routes/uploadRoute.js";
 ///---End---///
 import "dotenv/config";
 // import path from "path";
@@ -69,7 +69,7 @@ app.use("/user", userRoutes);
 app.use("/product", productRoutes);
 app.use("/order", orderRoutes);
 app.use("/invoice", invoiceRoutes);
-app.use("/upload", uploadImageRouter);
+app.use("/upload", uploadRouter);
 app.use("/category", categoryRouter);
 app.get("/", (req, res) => {
   res.json("Api is running successfully");
