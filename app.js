@@ -15,6 +15,7 @@ import productRoutes from "./routes/productRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import invoiceRoutes from "./routes/invoiceRoutes.js";
 import uploadImageRouter from "./routes/uploadImageRoute.js";
+import chatRoutes from "./routes/chatRoutes.js"
 ///---End---///
 import "dotenv/config";
 // import path from "path";
@@ -71,6 +72,7 @@ app.use("/order", orderRoutes);
 app.use("/invoice", invoiceRoutes);
 app.use("/upload", uploadImageRouter);
 app.use("/category", categoryRouter);
+app.use("/chat",chatRoutes)
 app.get("/", (req, res) => {
   res.json("Api is running successfully");
 });
