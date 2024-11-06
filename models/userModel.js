@@ -47,6 +47,7 @@ const userSchema = new Schema(
       enum: ["lead", "prospect", "opportunity", "customer"],
       default: "lead",
     },
+    // account_owner , authforbilling :
     username: {
       type: String,
       required: true,
@@ -56,7 +57,7 @@ const userSchema = new Schema(
     email: {
       type: String,
       required: true,
-      // unique: true,
+      unique: true,
       trim: true,
     },
     password: {
