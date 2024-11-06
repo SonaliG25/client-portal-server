@@ -57,59 +57,6 @@ export const createUser = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-// export const createUser = async (req, res) => {
-//   console.log("Request Body:", req.body); // Log the incoming request body
-
-//   const {
-//     username,
-//     email,
-//     password,
-//     role,
-//     purchaseHistory,
-//     subscription,
-//     firstName,
-//     lastName,
-//     phone,
-//     addresses,
-//   } = req.body;
-
-//   try {
-//     // Hash the password
-//     const hashedPassword = await bcrypt.hash(password, 12);
-
-//     // Create or update user if they already exist
-//     const user = await User.findOneAndUpdate(
-//       { email },
-//       {
-//         username,
-//         password: hashedPassword,
-//         role,
-//         purchaseHistory,
-//         subscription,
-//         firstName,
-//         lastName,
-//         phone,
-//         addresses,
-//       },
-//       { new: true, upsert: true }
-//     );
-
-//     sendmail(
-//       email,
-//       "Welcome to our Client-portal website",
-//       `Hi ${firstName}, thank you for registering!`,
-//       `<p>Hi <strong>${firstName}</strong>,</p><p>Thank you for registering on our Client-portal website!</p>`
-//     );
-
-//     res.status(201).json({ message: "User saved successfully" });
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
-
-// Get all users (excluding passwords)
-
-//for searching and pagination
 
 export const getAllUsers = async (req, res) => {
   try {

@@ -1,8 +1,8 @@
 import multer from "multer";
 import express from "express";
-import {uploadSingleImage} from "../controllers/uploadImageController.js";
+import { uploadSingleImage } from "../controllers/uploadImageController.js";
 import { isAdmin } from "../middlewares/userValidatorMiddleware.js";
- const uploadImageRouter = express.Router();
+const uploadRouter = express.Router();
 // Multer configuration for storing files on disk
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -14,16 +14,23 @@ const storage = multer.diskStorage({
 });
 
 // Configure multer with the storage settings
-const upload = multer({ 
-  storage: storage
+const upload = multer({
+  storage: storage,
 });
 
 // Route to handle single image upload
-uploadImageRouter.post(
+uploadRouter.post(
   "/productImage",
   isAdmin, //  only admins can upload
   upload.single("image"), // Handle single file upload with the field name "image"
   uploadSingleImage // Controller function to process the uploaded image
 );
+// Route to handle single image upload
+uploadRouter.post(
+  "/doc",
+  isAdmin, //  only admins can upload
+  upload.single("doc"), // Handle single file upload with the field name "image"
+  uploadSingleImage // Controller function to process the uploaded image
+);
 
-export default uploadImageRouter;
+export default uploadRouter;

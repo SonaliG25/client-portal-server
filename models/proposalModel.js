@@ -27,12 +27,14 @@ const proposalSchema = new Schema(
       ref: "User",
       required: true,
     },
-    emailTo: { //Proposed To
+    emailTo: {
+      //Proposed To
       type: String,
       required: true,
       trim: true,
     },
-    title: { //
+    title: {
+      //
       type: String,
       required: true,
       trim: true,
@@ -72,6 +74,18 @@ const proposalSchema = new Schema(
       required: true,
       default: 0, // Final amount after applying all discounts
     },
+    attachments: [
+      {
+        filename: {
+          type: String,
+          required: true,
+        },
+        path: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
   },
   {
     timestamps: true, // Automatically creates createdAt and updatedAt fields
