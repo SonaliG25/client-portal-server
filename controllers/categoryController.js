@@ -33,7 +33,7 @@ export const getCategories = async (req, res) => {
       : {}; // No search if not provided
 
     // Retrieve all matching categories based on the search criteria
-    const allCategories = await Category.find(searchQuery);
+    const allCategories = await Category.find(searchQuery).sort({ name: 1 });
 
     // Calculate total categories and total pages
     const totalCategories = allCategories.length;
@@ -81,7 +81,6 @@ export const updateCategory = async (req, res) => {
     });
     if (!category) {
       return res.status(404).json({ error: "Category not found" });
-      return res.status(404).json({ error: "Category not found" });
     }
     res.json(category);
   } catch (error) {
@@ -98,6 +97,7 @@ export const deleteCategory = async (req, res) => {
     }
     res.json({ message: "Category deleted successfully" });
   } catch (error) {
+    toast.error("Unable to delete category");
     res.status(500).json({ error: error.message });
   }
 };
