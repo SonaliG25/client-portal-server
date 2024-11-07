@@ -100,13 +100,13 @@ export const getAllUsers = async (req, res) => {
         { lastName: { $regex: search, $options: "i" } },
         { phone: { $regex: search, $options: "i" } },
         { userType: { $regex: search, $options: "i" } },
-        { "subscription.length": { $regex: search, $options: "i" } },
       ],
     };
 
-    // Fetch users based on search criteria and pagination
+    // Fetch users based on search criteria, pagination, and sort order
     const users = await User.find(searchCriteria)
       .select("-password") // Exclude password field
+      .sort({ firstName: 1 }) // Sort by lastName, then by firstName
       .skip(startIndex) // Skip documents for pagination
       .limit(parseInt(limit)); // Limit documents per page
 
