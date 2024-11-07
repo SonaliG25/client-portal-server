@@ -15,7 +15,7 @@ import productRoutes from "./routes/productRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import invoiceRoutes from "./routes/invoiceRoutes.js";
 
-import uploadImageRouter from "./routes/uploadImageRoute.js";
+// import uploadImageRouter from "./routes/uploadImageRoute.js";
 import chatRoutes from "./routes/chatRoutes.js"
 
 import uploadRouter from "./routes/uploadRoute.js";
