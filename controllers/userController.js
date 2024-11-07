@@ -23,7 +23,7 @@ export const createUser = async (req, res) => {
     activeAccount,
     bannedAccount,
     accountManagers,
-    addresses,
+    address,
     purchaseHistory,
     subscription,
   } = req.body;
@@ -57,7 +57,7 @@ export const createUser = async (req, res) => {
       activeAccount,
       bannedAccount,
       accountManagers,
-      addresses,
+      address,
       purchaseHistory,
       subscription,
     });
