@@ -1,23 +1,31 @@
 import User from "../models/userModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { sendmail } from "../Helper/sendmail.js";
+// import { sendmail } from "../Helper/sendmail.js";
 
 // Create a new user
 export const createUser = async (req, res) => {
   console.log("Request Body:", req.body); // Log the incoming request body
 
   const {
-    username,
     email,
     password,
     role,
+    name,
+    phone,
+    userType,
+    businessDetails,
+    timeZone,
+    preferredContactMethod,
+    notes,
+    paymentStatus,
+    allowLogin,
+    activeAccount,
+    bannedAccount,
+    accountManagers,
+    addresses,
     purchaseHistory,
     subscription,
-    firstName,
-    lastName,
-    phone,
-    addresses,
   } = req.body;
 
   try {
@@ -29,32 +37,51 @@ export const createUser = async (req, res) => {
 
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 12);
+    const username = email.split("@")[0];
 
     // Create new user
     const newUser = new User({
-      username,
+      username: username,
       email,
       password: hashedPassword,
       role,
+      name,
+      phone,
+      userType,
+      businessDetails,
+      timeZone,
+      preferredContactMethod,
+      notes,
+      paymentStatus,
+      allowLogin,
+      activeAccount,
+      bannedAccount,
+      accountManagers,
+      addresses,
       purchaseHistory,
       subscription,
-      firstName,
-      lastName,
-      phone,
-      addresses,
     });
 
     await newUser.save();
-    // sendmail(
-    //   email,
-    //   "Welcom to our Client-portal website",
-    //   `Hi ${firstName} Thank for register`,
-    //   `<p>Hi <strong>${firstName}</strong>,</p><p>Thank you for registering on our Client-portal website!</p>`
-    // );
 
-    res.status(201).json({ message: "User created successfully" });
+    res
+      .status(201)
+      .json({ message: "User created successfully", user: newUser });
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+// userController.js
+
+export const getRoleClients = async (req, res) => {
+  try {
+    // Only find users where role is 'client'
+    const users = await User.find({ role: "client" });
+    res.status(200).json(users);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Failed to retrieve users", error: error.message });
   }
 };
 
@@ -113,32 +140,100 @@ export const getUserById = async (req, res) => {
   }
 };
 
+// export const updateUser = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const {
+//       purchaseHistory,
+//       subscription,
+//       firstName,
+//       lastName,
+//       phone,
+//       userType,
+//       addresses,
+//     } = req.body;
+
+//     const updatedUser = await User.findByIdAndUpdate(
+//       id,
+//       {
+//         purchaseHistory,
+//         subscription,
+//         firstName,
+//         lastName,
+//         phone,
+//         userType,
+//         addresses,
+//       },
+//       { new: true }
+//     );
+
+//     if (!updatedUser) {
+//       return res.status(404).json({ message: "User not found" });
+//     }
+
+//     res.status(200).json(updatedUser);
+//   } catch (error) {
+//     res.status(400).json({ message: error.message });
+//   }
+// };
+
+// Delete a user by ID
+
 export const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
     const {
-      purchaseHistory,
-      subscription,
-      firstName,
-      lastName,
+      password,
+      name,
       phone,
       userType,
+      businessDetails,
+      timeZone,
+      preferredContactMethod,
+      notes,
+      paymentStatus,
+      allowLogin,
+      activeAccount,
+      bannedAccount,
+      accountManagers,
       addresses,
+      purchaseHistory,
+      subscription,
     } = req.body;
 
-    const updatedUser = await User.findByIdAndUpdate(
-      id,
-      {
-        purchaseHistory,
-        subscription,
-        firstName,
-        lastName,
-        phone,
-        userType,
-        addresses,
-      },
-      { new: true }
+    // Build an object with the updated fields
+    const updateData = {
+      password,
+      name,
+      phone,
+      userType,
+      businessDetails,
+      timeZone,
+      preferredContactMethod,
+      notes,
+      paymentStatus,
+      allowLogin,
+      activeAccount,
+      bannedAccount,
+      accountManagers,
+      addresses,
+      purchaseHistory,
+      subscription,
+    };
+
+    // Remove any fields with undefined values
+    Object.keys(updateData).forEach(
+      (key) => updateData[key] === undefined && delete updateData[key]
     );
+
+    // Check if password is being updated and hash it
+    if (password) {
+      updateData.password = await bcrypt.hash(password, 12);
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(id, updateData, {
+      new: true,
+    });
 
     if (!updatedUser) {
       return res.status(404).json({ message: "User not found" });
@@ -150,7 +245,6 @@ export const updateUser = async (req, res) => {
   }
 };
 
-// Delete a user by ID
 export const deleteUser = async (req, res) => {
   const { id } = req.params;
 

@@ -15,7 +15,7 @@ import {
 const router = express.Router();
 
 // Route to create a proposal
-router.post("/new", isAdmin, validateProposal, createProposal);
+router.post("/new", isAdmin, createProposal);
 
 // Route to get all proposals
 router.get("/getAllProposals", isValidUser, getAllProposals);

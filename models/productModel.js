@@ -23,26 +23,46 @@ const productSchema = new Schema(
       required: true,
       trim: true,
     },
-    purchasePrice: {
+    cost: {
       type: Number,
       required: true,
       min: 0,
     },
-    mrp: {
+    tax: {
       type: Number,
       required: true,
       min: 0,
     },
-    salePrice: {
+    totalCost: {
       type: Number,
       required: true,
       min: 0,
     },
-    stock: {
+    productManager: {
+      type: mongoose.Schema.Types.ObjectId, // Assuming managers are stored as User documents
+      ref: "User",
+      required: true,
+    },
+    status: {
+      type: String,
+      enum: ["Active", "Inactive", "Retired"],
+      default: "Active",
+    },
+    activeSubscriptions: {
       type: Number,
-      required: false,
+      required: true,
       min: 0,
     },
+    revenueGenerated: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+    // stock: {
+    //   type: Number,
+    //   required: false,
+    //   min: 0,
+    // },
     category: {
       type: String,
       required: true,
@@ -50,30 +70,32 @@ const productSchema = new Schema(
     },
     imageUrl: {
       type: String,
-      required:true,
-      // trim: true,
-      // validate: {
-      //   validator: function (v) {
-      //     return /^(ftp|http|https):\/\/[^ "]+$/.test(v);
-      //   },
-      //   message: (props) => `${props.value} is not a valid URL!`,
-      // },
+      required: true,
     },
     purchaseType: {
       type: String,
-      enum: purchaseTypes,
+      enum: ["one-time", "subscription"],
       required: true,
       default: "one-time", // Default value for purchase type
+    },
+    duration: {
+      type: Number,
+      required: function () {
+        return this.purchaseType === "subscription"; // Only required if purchaseType is "subscription"
+      },
+      min: 1,
+      max: 365, // Maximum duration, e.g., 1 year (can adjust as per your needs)
+      default: 12, // Default duration is 12 months for subscriptions
     },
     currency: {
       type: String,
       required: true,
       default: "USD", // Set default currency, you can change this based on your requirements
     },
-    isAvailable: {
-      type: Boolean,
-      required: true,
-    },
+    // isAvailable: {
+    //   type: Boolean,
+    //   required: true,
+    // },
     tags: {
       type: [String],
       index: true, // Useful for filtering and search
@@ -81,6 +103,7 @@ const productSchema = new Schema(
     keywords: {
       type: [String], // Array of keywords for search
     },
+
     // views: {
     //   type: Number,
     //   default: 0, // Tracks product views

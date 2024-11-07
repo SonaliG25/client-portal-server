@@ -2,6 +2,7 @@ import express from "express";
 import {
   createUser,
   getAllUsers,
+  getRoleClients,
   getUserById,
   updateUser,
   deleteUser,
@@ -17,6 +18,7 @@ import User from "../models/userModel.js";
 // User routes
 router.post("/register", createUser);
 router.get("/users", isValidUser, getAllUsers);
+router.get("/clients", isValidUser, getRoleClients);
 router.get("/:id", isValidUser, getUserById);
 router.patch("/:id", isValidUser, updateUser);
 router.delete("/:id", isValidUser, deleteUser);

@@ -33,4 +33,18 @@ uploadRouter.post(
   uploadSingleImage // Controller function to process the uploaded image
 );
 
+// Endpoint for file uploads
+uploadRouter.post("/docs", upload.array("docs", 10), (req, res) => {
+  if (!req.files) {
+    return res.status(400).send("No files uploaded");
+  }
+
+  const files = req.files.map((file) => ({
+    filename: file.filename,
+    url: `/uploads/${file.filename}`,
+  }));
+
+  res.status(200).json({ files });
+});
+
 export default uploadRouter;

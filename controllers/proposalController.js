@@ -1,50 +1,71 @@
 import Proposal from "../models/proposalModel.js";
 import { validationResult } from "express-validator";
 
-import { sendmail } from "../Helper/sendmail.js";
+import { sendEmail } from "../Helper/sendmail.js";
 
 // Create a new proposal
 export const createProposal = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+  // const errors = validationResult(req);
+  // if (!errors.isEmpty()) {
+  //   return res.status(400).json({ errors: errors.array() });
+  // }
+  const { proposalData } = req.body;
+  console.log("proposalData", proposalData);
+
+  if (!proposalData) {
+    return res.status(400).json({ error: "Proposal data is required" });
   }
 
   try {
+    // Example of reading the properties
     const {
       recipient,
+      emailTo,
       title,
       content,
-      emailTo,
       products,
-      discountOnGrandTotal,
-      attachments,
-    } = req.body;
-
-    // Calculate productTotal and grandTotal
-    let productTotal = 0;
-    products.forEach((product) => {
-      productTotal += product.total;
-    });
-
-    const grandTotal = productTotal;
-    const finalAmount = grandTotal - discountOnGrandTotal;
-
-    const newProposal = new Proposal({
-      recipient,
-      title,
-      content,
-      emailTo,
-      products,
+      grandTotalCurrency,
       productTotal,
       grandTotal,
       discountOnGrandTotal,
       finalAmount,
-    });
+      attachments,
+    } = proposalData;
 
-    const savedProposal = await newProposal.save();
-    sendmail(emailTo, title, content, attachments);
-    res.status(201).json(savedProposal);
+    console.log("Recipient:", recipient);
+    console.log("Email To:", emailTo);
+    console.log("Title:", title);
+    console.log("Content:", content);
+    console.log("Products:", products);
+    console.log("Grand Total Currency:", grandTotalCurrency);
+    console.log("Product Total:", productTotal);
+    console.log("Grand Total:", grandTotal);
+    console.log("Discount on Grand Total:", discountOnGrandTotal);
+    console.log("Final Amount:", finalAmount);
+    console.log("Attachments:", attachments);
+
+    const mailStatus = sendEmail(proposalData);
+
+    if (mailStatus) {
+      console.log("mailStatus", mailStatus);
+      const newProposal = new Proposal({
+        recipient,
+        emailTo,
+        title,
+        content,
+        products,
+        grandTotalCurrency,
+        productTotal,
+        grandTotal,
+        discountOnGrandTotal,
+        finalAmount,
+        attachments,
+        status: "sent",
+      });
+      const savedProposal = await newProposal.save();
+
+      res.status(201).json(savedProposal);
+    }
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

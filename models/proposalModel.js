@@ -25,7 +25,7 @@ const proposalSchema = new Schema(
     recipient: {
       type: Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      // required: true,
     },
     emailTo: {
       //Proposed To
@@ -73,6 +73,11 @@ const proposalSchema = new Schema(
       type: Number,
       required: true,
       default: 0, // Final amount after applying all discounts
+    },
+    status: {
+      type: String,
+      required: true,
+      enum: ["sent", "accepted", "rejected"],
     },
     attachments: [
       {
