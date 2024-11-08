@@ -27,21 +27,65 @@ export const createTicket = async (req, res) => {
 // Get all tickets
 export const getAllTickets = async (req, res) => {
   try {
+    const { page = 1, limit = 5, search = "", startDate, endDate } = req.query;
+
+    // Define the search criteria
+    const searchCriteria = {
+      $and: [
+        {
+          $or: [
+            { title: { $regex: search, $options: "i" } },
+            { description: { $regex: search, $options: "i" } },
+            { status: { $regex: search, $options: "i" } },
+            { priority: { $regex: search, $options: "i" } },
+          ],
+        },
+      ],
+    };
+
+    // Add date range filter if startDate or endDate is provided
+    if (startDate || endDate) {
+      searchCriteria.$and.push({
+        createdAt: {
+          ...(startDate ? { $gte: new Date(startDate) } : {}),
+          ...(endDate ? { $lte: new Date(endDate) } : {}),
+        },
+      });
+    }
+
     let tickets;
+    let totalTickets;
 
     if (req.user.role === "admin") {
-      // Admin can see all tickets
-      tickets = await Ticket.find();
+      // Admin can see all tickets with search and pagination
+      totalTickets = await Ticket.countDocuments(searchCriteria);
+      tickets = await Ticket.find(searchCriteria)
+        .sort({ createdAt: -1 })
+        .skip((page - 1) * limit)
+        .limit(parseInt(limit));
     } else {
-      // Regular user (client) can see only their tickets
-      tickets = await Ticket.find({ "client.user": req.user.userId });
+      // Regular user (client) can see only their tickets with search and pagination
+      const clientCriteria = {
+        "client.user": req.user.userId,
+        ...searchCriteria,
+      };
+      totalTickets = await Ticket.countDocuments(clientCriteria);
+      tickets = await Ticket.find(clientCriteria)
+        .sort({ createdAt: -1 })
+        .skip((page - 1) * limit)
+        .limit(parseInt(limit));
     }
 
     if (tickets.length === 0) {
       return res.status(404).json({ message: "No tickets found" });
     }
 
-    res.status(200).json(tickets);
+    res.status(200).json({
+      tickets,
+      currentPage: parseInt(page),
+      totalPages: Math.ceil(totalTickets / limit),
+      totalTickets,
+    });
   } catch (error) {
     res.status(400).json({ message: "Error fetching tickets", error });
   }

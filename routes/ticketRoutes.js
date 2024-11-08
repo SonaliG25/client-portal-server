@@ -15,7 +15,7 @@ router.get("/tickets", isValidUser, ticketController.getAllTickets);
 router.get("/:ticketId", isValidUser, ticketController.getTicketById);
 
 // Update a ticket by ID
-router.put("/:ticketId", isValidUser, ticketController.updateTicket);
+router.patch("/:ticketId", isValidUser, ticketController.updateTicket);
 
 // Delete a ticket by ID
 router.delete("/:ticketId", isValidUser, ticketController.deleteTicket);
