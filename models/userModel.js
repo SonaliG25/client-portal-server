@@ -115,6 +115,7 @@ const userSchema = new Schema(
         ref: "AccountManager", // Referencing the AccountManager model
       },
     ],
+    
     address: {
       street1: { type: String, required: true },
       street2: { type: String, required: true },
