@@ -1,11 +1,10 @@
-import Ticket from "../models/Ticket"; // Import Ticket model
+import Ticket from "../models/ticketSchema.js"; // Import Ticket model
 import mongoose from "mongoose";
 
 // Create a new ticket
 export const createTicket = async (req, res) => {
   try {
-    const { title, description, priority, client, attachments, category } =
-      req.body;
+    const { title, description, priority, client, attachments } = req.body;
 
     const newTicket = new Ticket({
       title,
@@ -13,7 +12,6 @@ export const createTicket = async (req, res) => {
       priority,
       client,
       attachments,
-      category,
     });
 
     await newTicket.save();
@@ -29,9 +27,9 @@ export const createTicket = async (req, res) => {
 // Get all tickets
 export const getAllTickets = async (req, res) => {
   try {
-    const tickets = await Ticket.find()
-      .populate("client")
-      .populate("assignedTo"); // Populate client and assignedTo with user data
+    const tickets = await Ticket.find();
+    // .populate("client")
+    // .populate("assignedTo"); // Populate client and assignedTo with user data
     res.status(200).json(tickets);
   } catch (error) {
     res.status(400).json({ message: "Error fetching tickets", error });
@@ -129,5 +127,35 @@ export const searchTickets = async (req, res) => {
     res.status(200).json(tickets);
   } catch (error) {
     res.status(400).json({ message: "Error searching tickets", error });
+  }
+};
+
+export const getTicketsByClientId = async (req, res) => {
+  try {
+    const { clientId, page = 1, limit = 10 } = req.query; // Page and limit for pagination
+
+    // Validate clientId to avoid CastError
+    if (!mongoose.Types.ObjectId.isValid(clientId)) {
+      return res.status(400).json({ message: "Invalid client ID format" });
+    }
+
+    const skip = (page - 1) * limit;
+
+    const tickets = await Ticket.find({ client: clientId })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .sort({ createdAt: 1 });
+
+    const totalTickets = await Ticket.countDocuments({ client: clientId });
+    const totalPages = Math.ceil(totalTickets / limit);
+
+    res.status(200).json({
+      tickets,
+      totalPages,
+      currentPage: page,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({ message: "Error fetching tickets", error });
   }
 };
