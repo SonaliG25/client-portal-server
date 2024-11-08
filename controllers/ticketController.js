@@ -27,7 +27,16 @@ export const createTicket = async (req, res) => {
 // Get all tickets
 export const getAllTickets = async (req, res) => {
   try {
-    const tickets = await Ticket.find({ "client.user": req.user.userId });
+    let tickets;
+
+    if (req.user.role === "admin") {
+      // Admin can see all tickets
+      tickets = await Ticket.find();
+    } else {
+      // Regular user (client) can see only their tickets
+      tickets = await Ticket.find({ "client.user": req.user.userId });
+    }
+
     if (tickets.length === 0) {
       return res.status(404).json({ message: "No tickets found" });
     }

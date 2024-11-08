@@ -1,6 +1,7 @@
 import express from "express";
 import * as ticketController from "../controllers/ticketController.js";
 import { isValidUser } from "../middlewares/userValidatorMiddleware.js";
+import { isAdmin } from "../middlewares/userValidatorMiddleware.js";
 const router = express.Router();
 
 // Create a new ticket
