@@ -27,9 +27,11 @@ export const createTicket = async (req, res) => {
 // Get all tickets
 export const getAllTickets = async (req, res) => {
   try {
-    const tickets = await Ticket.find();
-    // .populate("client")
-    // .populate("assignedTo"); // Populate client and assignedTo with user data
+    const tickets = await Ticket.find({ "client.user": req.user.userId });
+    if (tickets.length === 0) {
+      return res.status(404).json({ message: "No tickets found" });
+    }
+
     res.status(200).json(tickets);
   } catch (error) {
     res.status(400).json({ message: "Error fetching tickets", error });

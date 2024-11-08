@@ -5,6 +5,7 @@ const router = express.Router();
 
 // Create a new ticket
 router.post("/new", isValidUser, ticketController.createTicket);
+router.get("/tickets", isValidUser, ticketController.getAllTickets);
 
 // Get all tickets
 // router.get("/tickets", isValidUser, ticketController.getAllTickets);

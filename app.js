@@ -14,15 +14,10 @@ import userRoutes from "./routes/userRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import invoiceRoutes from "./routes/invoiceRoutes.js";
-<<<<<<< HEAD
-import chatRoutes from "./routes/chatRoutes.js";
-import ticketRoutes from "./routes/ticketRoutes.js";
-=======
-
+import ticketRouter from "./routes/ticketRoutes.js";
 // import uploadImageRouter from "./routes/uploadImageRoute.js";
-import chatRoutes from "./routes/chatRoutes.js"
+import chatRoutes from "./routes/chatRoutes.js";
 
->>>>>>> 48c7d94069afd1371bbd525907e77707a9c2aeae
 import uploadRouter from "./routes/uploadRoute.js";
 
 ///---End---///
@@ -80,12 +75,9 @@ app.use("/product", productRoutes);
 app.use("/order", orderRoutes);
 app.use("/invoice", invoiceRoutes);
 app.use("/upload", uploadRouter);
+app.use("/ticket", ticketRouter);
 app.use("/category", categoryRouter);
 app.use("/chat", chatRoutes);
-<<<<<<< HEAD
-app.use("/ticket", ticketRoutes);
-=======
->>>>>>> 48c7d94069afd1371bbd525907e77707a9c2aeae
 app.get("/", (req, res) => {
   res.json("Api is running successfully");
 });

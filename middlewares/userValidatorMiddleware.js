@@ -58,6 +58,7 @@ export const isValidUser = (req, res, next) => {
     console.log(decoded);
     // Check if the user role is admin
     if (decoded.role === "admin" || decoded.role === "client") {
+      req.user = { userId: decoded.userId, role: decoded.role };
       next();
     } else {
       return res.status(403).json({
