@@ -160,5 +160,65 @@ export const deleteProposal = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+// Get all proposals
+export const getAllProposalsWithFilters = async (req, res) => {
+  try {
+    const { page = 1, limit = 10, search = "" } = req.query;
 
-export const sendEmailToClient = (req, res) => {};
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+
+    const searchRegex = new RegExp(search, "i");
+
+    // Ensure only string fields are using $regex
+    const query = {
+      $or: [
+        { title: { $regex: searchRegex } },
+        { emailTo: { $regex: searchRegex } },
+        { content: { $regex: searchRegex } },
+        // Remove $regex from non-string fields
+        // { "products.productId": { $regex: searchRegex } }, // Do not apply regex to productId (ObjectId)
+      ],
+    };
+
+    const totalProposals = await Proposal.countDocuments(query);
+
+    const proposals = await Proposal.find(query)
+      .limit(limitNumber)
+      .skip((pageNumber - 1) * limitNumber)
+      // .populate("recipient", "name email") // Populate recipient data (optional)
+      .exec();
+
+    res.status(200).json({
+      total: totalProposals,
+      page: pageNumber,
+      totalPages: Math.ceil(totalProposals / limitNumber),
+      proposals,
+    });
+  } catch (error) {
+    console.error("Error fetching proposals:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const updateProposalStatus = async (req, res) => {
+  try {
+    const proposalId = req.params.id;
+    const { status } = req.body;
+
+    // Update the proposal status
+    const updatedProposal = await Proposal.findByIdAndUpdate(
+      proposalId,
+      { status: status },
+      { new: true } // Return the updated document
+    );
+
+    if (!updatedProposal) {
+      return res.status(404).json({ message: "Proposal not found" });
+    }
+
+    res.status(200).json(updatedProposal);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

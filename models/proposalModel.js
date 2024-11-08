@@ -9,8 +9,8 @@ const selectedProductSchema = new Schema({
   total: { type: Number, required: true }, // Total price after applying the discount
   discountType: {
     type: String,
-    enum: ["percentage", "fixed"],
-    default: "fixed",
+    enum: ["Percentage", "Fixed"],
+    default: "Fixed",
   },
   currency: {
     type: String,
@@ -56,8 +56,8 @@ const proposalSchema = new Schema(
     },
     discountType: {
       type: String,
-      enum: ["percentage", "fixed"],
-      default: "fixed",
+      enum: ["Percentage", "Fixed"],
+      default: "Fixed",
     },
     discountOnGrandTotal: {
       type: Number,
@@ -77,7 +77,12 @@ const proposalSchema = new Schema(
     status: {
       type: String,
       required: true,
-      enum: ["sent", "accepted", "rejected"],
+      enum: ["Sent", "Accepted", "Rejected", "ReSent"],
+    },
+    ReSentProposalId: {
+      type: Schema.Types.ObjectId,
+      ref: "Proposal",
+      default: null,
     },
     attachments: [
       {
