@@ -74,7 +74,10 @@ export const createProposal = async (req, res) => {
 // Get all proposals
 export const getAllProposals = async (req, res) => {
   try {
-    const proposals = await Proposal.find()
+    const query = { recipient: req.user.userId };
+    console.log("userID", req.user.userId);
+
+    const proposals = await Proposal.find(query)
       .populate("recipient")
       .populate("products.productId");
     res.status(200).json(proposals);
