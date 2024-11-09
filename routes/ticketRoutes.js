@@ -6,6 +6,12 @@ const router = express.Router();
 
 // Create a new ticket
 router.post("/new", isValidUser, ticketController.createTicket);
+router.post("/comment/:id", isValidUser, ticketController.addCommentToTicket);
+router.post(
+  "/resolutionNotes/:id",
+  isValidUser,
+  ticketController.addResolutionToTicket
+);
 router.get("/tickets", isValidUser, ticketController.getAllTickets);
 
 // Get all tickets
