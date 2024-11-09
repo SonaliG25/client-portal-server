@@ -74,21 +74,21 @@ const productSchema = new Schema(
       type: String,
       required: true,
     },
-    purchaseType: {
-      type: String,
-      enum: ["one-time", "subscription"],
-      required: true,
-      default: "one-time", // Default value for purchase type
-    },
-    duration: {
-      type: Number,
-      required: function () {
-        return this.purchaseType === "subscription"; // Only required if purchaseType is "subscription"
-      },
-      min: 1,
-      max: 365, // Maximum duration, e.g., 1 year (can adjust as per your needs)
-      default: 12, // Default duration is 12 months for subscriptions
-    },
+    // purchaseType: {
+    //   type: String,
+    //   enum: ["one-time", "subscription"],
+    //   required: true,
+    //   default: "one-time", // Default value for purchase type
+    // },
+    // duration: {
+    //   type: Number,
+    //   required: function () {
+    //     return this.purchaseType === "subscription"; // Only required if purchaseType is "subscription"
+    //   },
+    //   min: 1,
+    //   max: 365, // Maximum duration, e.g., 1 year (can adjust as per your needs)
+    //   default: 12, // Default duration is 12 months for subscriptions
+    // },
     currency: {
       type: String,
       required: true,

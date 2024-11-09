@@ -3,6 +3,7 @@ import express from "express";
 import {
   createCategory,
   getCategories,
+  getAllCategories,
   getCategoryById,
   updateCategory,
   deleteCategory,
@@ -15,6 +16,7 @@ const router = express.Router();
 
 router.post("/new", isAdmin, createCategory); // Create category
 router.get("/allCategory", isValidUser, getCategories); // Get all categories
+router.get("/getAllCategories", isValidUser, getAllCategories); // Get all categories
 router.get("/:id", isValidUser, getCategoryById); // Get category by ID
 router.patch("/:id", isAdmin, updateCategory); // Update category
 router.delete("/:id", isAdmin, deleteCategory); // Delete category

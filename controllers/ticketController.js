@@ -214,3 +214,62 @@ export const getTicketsByClientId = async (req, res) => {
     res.status(400).json({ message: "Error fetching tickets", error });
   }
 };
+
+export const addCommentToTicket = async (req, res) => {
+  try {
+    const { id } = req.params; // Retrieve the ticket ID from the route
+    const { userId, name, email, message } = req.body;
+
+    // Find the ticket by ID
+    const ticket = await Ticket.findById(id);
+
+    if (!ticket) {
+      return res.status(404).json({ message: "Ticket not found" });
+    }
+
+    // Add the new comment
+    const newComment = {
+      user: { userId, name, email },
+      message,
+    };
+
+    ticket.comments.push(newComment);
+
+    // Save the ticket with the new comment
+    await ticket.save();
+
+    res.status(200).json({
+      message: "Comment added successfully",
+      ticket,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error adding comment", error });
+  }
+};
+export const addResolutionToTicket = async (req, res) => {
+  try {
+    const { id } = req.params; // Retrieve the ticket ID from the route
+    const { resolutionNotes } = req.body;
+
+    // Find the ticket by ID
+    const ticket = await Ticket.findById(id);
+
+    if (!ticket) {
+      return res.status(404).json({ message: "Ticket not found" });
+    }
+
+    // Update the resolution field with the new resolutionNotes
+    ticket.resolutionNotes = resolutionNotes;
+
+    // Save the ticket with the updated resolution
+    await ticket.save();
+    console.log("Request Body ticket", ticket);
+
+    res.status(200).json({
+      message: "Resolution added successfully",
+      ticket,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error adding resolution", error });
+  }
+};

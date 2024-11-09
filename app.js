@@ -1,6 +1,6 @@
 // index.mjs
 import http from "http";
-import { Server } from "socket.io" // Importing the socket server setup
+import { Server } from "socket.io"; // Importing the socket server setup
 import path from "path";
 import jwt from "jsonwebtoken";
 import express from "express";
@@ -13,12 +13,10 @@ import proposalRoutes from "./routes/proposalRoutes.js";
 import proposalTemplateRoutes from "./routes/proposalTemplatesRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
-import orderRoutes from "./routes/orderRoutes.js";
+import subcriptionRoutes from "./routes/subscriptionRoutes.js";
 import invoiceRoutes from "./routes/invoiceRoutes.js";
-import ticketRouter from "./routes/ticketRoutes.js";
-// import uploadImageRouter from "./routes/uploadImageRoute.js";
 import chatRoutes from "./routes/chatRoutes.js";
-
+import ticketRoutes from "./routes/ticketRoutes.js";
 import uploadRouter from "./routes/uploadRoute.js";
 
 ///---End---///
@@ -36,14 +34,14 @@ const app = express();
 // // Attach Socket.IO to the HTTP server
 // io.attach(server);
 const PORT = process.env.PORT || 3000;
-const server = http.createServer(app)
+const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     rigin: "*", // Set to "*" or specific origin (e.g., "http://localhost:3001") for security
     methods: ["GET", "POST"],
     credentials: true, // Enable credentials if necessary
   },
-})
+});
 
 // Middleware
 app.use(
@@ -142,19 +140,20 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("User disconnected:", socket.id);
   });
-})
+});
 
 app.use("/media", mediaRoutes);
 app.use("/proposal", proposalRoutes);
 app.use("/proposalTemplate", proposalTemplateRoutes);
 app.use("/user", userRoutes);
 app.use("/product", productRoutes);
-app.use("/order", orderRoutes);
+app.use("/subscription", subcriptionRoutes);
 app.use("/invoice", invoiceRoutes);
 app.use("/upload", uploadRouter);
-app.use("/ticket", ticketRouter);
+app.use("/ticket", ticketRoutes);
 app.use("/category", categoryRouter);
 app.use("/chat", chatRoutes);
+app.use("/ticket", ticketRoutes);
 app.get("/", (req, res) => {
   res.json("Api is running successfully");
 });
