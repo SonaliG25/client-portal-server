@@ -20,7 +20,7 @@ const router = express.Router();
 router.post("/new", isAdmin, createProposal);
 
 // Route to get all proposals
-router.get("/getAllProposals", isAdmin, getAllProposals);
+router.get("/getAllProposals", isValidUser, getAllProposals);
 
 router.get("/proposals", isAdmin, getAllProposalsWithFilters);
 

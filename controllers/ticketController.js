@@ -259,10 +259,11 @@ export const addResolutionToTicket = async (req, res) => {
     }
 
     // Update the resolution field with the new resolutionNotes
-    ticket.resolution = { resolutionNotes };
+    ticket.resolutionNotes = resolutionNotes;
 
     // Save the ticket with the updated resolution
     await ticket.save();
+    console.log("Request Body ticket", ticket);
 
     res.status(200).json({
       message: "Resolution added successfully",
