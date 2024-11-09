@@ -2,9 +2,10 @@
 import http from "http";
 import { Server } from "socket.io" // Importing the socket server setup
 import path from "path";
-
+import jwt from "jsonwebtoken";
 import express from "express";
 import mongoose from "mongoose";
+import Chat from "./models/chatModel.js";
 ///Routes
 import categoryRouter from "./routes/categoryRoutes.js";
 import mediaRoutes from "./routes/mediaRoutes.js";
@@ -38,7 +39,9 @@ const PORT = process.env.PORT || 3000;
 const server = http.createServer(app)
 const io = new Server(server, {
   cors: {
-    origin: "*", // Allow cross-origin requests, adjust as needed
+    rigin: "*", // Set to "*" or specific origin (e.g., "http://localhost:3001") for security
+    methods: ["GET", "POST"],
+    credentials: true, // Enable credentials if necessary
   },
 })
 
@@ -72,10 +75,31 @@ mongoose
   .catch((err) => console.error("Error connecting to MongoDB", err));
 
 // Routes
+io.use((socket, next) => {
+  console.log(socket.handshake.headers.token);
+  
+  const token = socket.handshake.headers.token; // Extract token from query
+
+  if (!token) {
+    return next(new Error("Authentication error: No token provided"));
+  }
+
+  try {
+    console.log("Decoded");
+    const decoded = jwt.verify(token, process.env.JWT_SECRET); // Validate token
+    console.log("Decoded ===",decoded);
+    
+    socket.user = decoded; // Attach user data to socket instance for later use
+    next(); // Allow connection
+  } catch (error) {
+    next(new Error("Authentication error: Invalid token",token));
+  }
+})
+
 
 io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
-
+  
   // Join a chat room
   socket.on("joinRoom", ({ userId, receiverId }) => {
     const room = [userId, receiverId].sort().join("_");
@@ -83,10 +107,36 @@ io.on("connection", (socket) => {
     console.log(`User joined room ${room}`);
   });
 
+  
+
   // Handle sending a message
-  socket.on("sendMessage", (data) => {
+  socket.on("sendMessage", async(data) => {
     const room = [data.sender, data.receiver].sort().join("_");
+    
+    
     io.to(room).emit("receiveMessage", data); // Broadcast the message to the room
+    console.log("RoomData ==>",data);
+
+    try {
+      const newMessage = new Chat({
+        sender: data.sender,
+        receiver: data.receiver,
+        message: data.message,
+         room: room,
+         file:data.file,
+        createdAt: new Date()
+      });
+      
+      await newMessage.save();
+      
+      io.to(data.receiver).emit("newMessageNotification", {
+        sender: data.sender,
+        message: data.message,
+      });
+      console.log("Message saved to database:", newMessage);
+    } catch (error) {
+      console.error("Error saving message:", error);
+    }
   });
 
   socket.on("disconnect", () => {
@@ -109,6 +159,6 @@ app.get("/", (req, res) => {
   res.json("Api is running successfully");
 });
 // Start server
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
