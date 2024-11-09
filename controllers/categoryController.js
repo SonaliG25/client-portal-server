@@ -23,35 +23,41 @@ export const createCategory = async (req, res) => {
 // };
 export const getCategories = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1; // Current page (default is 1)
-    const limit = parseInt(req.query.limit) || 5; // Items per page (default is 10)
-    const search = req.query.search ? req.query.search.toLowerCase() : ""; // Search term
+    // Parse query parameters
+    const page = parseInt(req.query.page) || null; // Page number, null if not provided
+    const limit = parseInt(req.query.limit) || null; // Items per page, null if not provided
+    const search = req.query.search ? req.query.search.toLowerCase() : ""; // Search term, empty if not provided
+    const sort = req.query.sort ? req.query.sort : "name"; // Sort by field, default is "name"
 
-    // Construct the search query
+    // Construct the search query if search term is provided
     const searchQuery = search
       ? { name: { $regex: search, $options: "i" } } // Case-insensitive search
-      : {}; // No search if not provided
+      : {}; // Empty query object if no search term
 
-    // Retrieve all matching categories based on the search criteria
-    const allCategories = await Category.find(searchQuery).sort({ name: 1 });
+    // Get all categories without pagination if page and limit are not provided
+    if (!page && !limit) {
+      const categories = await Category.find(searchQuery).sort(sort ? { [sort]: 1 } : {});
+      return res.json({
+        categories,
+        totalCategories: categories.length,
+      });
+    }
 
-    // Calculate total categories and total pages
-    const totalCategories = allCategories.length;
-    const totalPages = Math.ceil(totalCategories / limit); // Calculate total pages
+    // Apply pagination and sorting if page or limit is specified
+    const totalCategories = await Category.countDocuments(searchQuery); // Total categories matching search
+    const totalPages = Math.ceil(totalCategories / (limit || totalCategories)); // Total pages, defaults to 1 if no limit
 
-    // Calculate start and end index for the current page
-    const startIndex = (page - 1) * limit;
-    const endIndex = startIndex + limit;
+    const categories = await Category.find(searchQuery)
+      .sort({ [sort]: 1 })
+      .skip((page - 1) * (limit || totalCategories)) // Skip items based on page and limit
+      .limit(limit || totalCategories); // Limit number of items per page if limit is provided
 
-    // Get categories for the current page
-    const categories = allCategories.slice(startIndex, endIndex);
-
-    // Respond with paginated and filtered categories
+    // Respond with categories based on the applied criteria
     res.json({
       categories,
       totalCategories,
       totalPages,
-      currentPage: page,
+      currentPage: page || 1, // Default to page 1 if pagination not provided
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
