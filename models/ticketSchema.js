@@ -75,15 +75,25 @@ const ticketSchema = new mongoose.Schema(
     comments: [
       {
         user: {
-          type: mongoose.Schema.Types.ObjectId, // User who added the comment (admin/agent/client)
-          ref: "User",
+          userId: {
+            type: mongoose.Schema.Types.ObjectId, // User who added the comment (admin/agent/client)
+            ref: "User",
+          },
+          name: {
+            type: String,
+            default: "",
+          },
+          email: {
+            type: String,
+            default: "",
+          },
         },
         message: {
           type: String,
           required: true,
           trim: true,
         },
-        timestamp: {
+        createdAt: {
           type: Date,
           default: Date.now,
         },

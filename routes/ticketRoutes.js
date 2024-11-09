@@ -1,10 +1,12 @@
 import express from "express";
 import * as ticketController from "../controllers/ticketController.js";
 import { isValidUser } from "../middlewares/userValidatorMiddleware.js";
+import { isAdmin } from "../middlewares/userValidatorMiddleware.js";
 const router = express.Router();
 
 // Create a new ticket
 router.post("/new", isValidUser, ticketController.createTicket);
+router.get("/tickets", isValidUser, ticketController.getAllTickets);
 
 // Get all tickets
 // router.get("/tickets", isValidUser, ticketController.getAllTickets);
@@ -13,7 +15,7 @@ router.post("/new", isValidUser, ticketController.createTicket);
 router.get("/:ticketId", isValidUser, ticketController.getTicketById);
 
 // Update a ticket by ID
-router.put("/:ticketId", isValidUser, ticketController.updateTicket);
+router.patch("/:ticketId", isValidUser, ticketController.updateTicket);
 
 // Delete a ticket by ID
 router.delete("/:ticketId", isValidUser, ticketController.deleteTicket);

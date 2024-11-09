@@ -50,13 +50,15 @@ const productSchema = new Schema(
     },
     activeSubscriptions: {
       type: Number,
-      required: true,
-      min: 0,
+      // required: true,
+      // min: 0,
+      default:0
     },
     revenueGenerated: {
       type: Number,
-      required: true,
-      min: 0,
+      // required: true,
+      // min: 0,
+      default:0
     },
     // stock: {
     //   type: Number,
