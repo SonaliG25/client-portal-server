@@ -40,7 +40,7 @@ export const getSubscriptions = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      data: orders,
+      data: totalSubscriptions,
       currentPage: pageNumber,
       totalPages: Math.ceil(totalSubscriptions / limitNumber),
       totalSubscriptions,
@@ -57,9 +57,9 @@ export const getSubscription = async (req, res) => {
     const subscription = await Subscription.findById(req.params.id)
       // .populate("customer")
       .exec();
-    if (!order)
+    if (!subscription)
       return res.status(404).json({ message: "Subscription not found" });
-    return res.status(200).json(order);
+    return res.status(200).json(subscription);
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }

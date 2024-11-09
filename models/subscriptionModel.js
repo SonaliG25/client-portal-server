@@ -71,7 +71,7 @@ const subscriptionSchema = new Schema(
     //   default: 0,
     //   min: 0,
     // },
-    totalAmount: {
+    finalAmount: {
       type: Number,
       required: true, // Total amount including shipping and products
       min: 0,
@@ -80,21 +80,6 @@ const subscriptionSchema = new Schema(
       type: String,
       required: true,
       default: "USD", // Currency for total amount
-    },
-    discount: {
-      type: Number,
-      default: 0, // Any discount applied to the subscription
-      min: 0,
-    },
-    grandTotal: {
-      type: Number,
-      required: true, // Grand total after discount
-      min: 0,
-    },
-    grandTotalCurrency: {
-      type: String,
-      required: true,
-      default: "USD", // Currency for grand total
     },
     subscriptionDate: {
       type: Date,

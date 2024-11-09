@@ -70,7 +70,7 @@ app.use("/proposal", proposalRoutes);
 app.use("/proposalTemplate", proposalTemplateRoutes);
 app.use("/user", userRoutes);
 app.use("/product", productRoutes);
-app.use("/subcription", subcriptionRoutes);
+app.use("/subscription", subcriptionRoutes);
 app.use("/invoice", invoiceRoutes);
 app.use("/upload", uploadRouter);
 app.use("/category", categoryRouter);

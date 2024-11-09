@@ -96,6 +96,10 @@ const proposalSchema = new Schema(
         },
       },
     ],
+    subscriptionOn: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true, // Automatically creates createdAt and updatedAt fields

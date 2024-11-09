@@ -8,7 +8,7 @@ import {
 const router = express.Router();
 
 // Create a new order
-router.post("/new", isValidUser, SubscriptionController.createSubscription);
+router.post("/new", isAdmin, SubscriptionController.createSubscription);
 
 // Get all orders
 router.get(

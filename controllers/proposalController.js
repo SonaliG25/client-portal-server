@@ -60,7 +60,7 @@ export const createProposal = async (req, res) => {
         discountOnGrandTotal,
         finalAmount,
         attachments,
-        status: "sent",
+        status: "Sent",
       });
       const savedProposal = await newProposal.save();
 
@@ -184,6 +184,7 @@ export const getAllProposalsWithFilters = async (req, res) => {
     const totalProposals = await Proposal.countDocuments(query);
 
     const proposals = await Proposal.find(query)
+      .sort({ createdAt: -1 })
       .limit(limitNumber)
       .skip((pageNumber - 1) * limitNumber)
       // .populate("recipient", "name email") // Populate recipient data (optional)
@@ -204,18 +205,19 @@ export const getAllProposalsWithFilters = async (req, res) => {
 export const updateProposalStatus = async (req, res) => {
   try {
     const proposalId = req.params.id;
-    const { status } = req.body;
+    const { status, subscriptionOn } = req.body;
 
     // Update the proposal status
     const updatedProposal = await Proposal.findByIdAndUpdate(
       proposalId,
-      { status: status },
+      { status: status, subscriptionOn: subscriptionOn },
       { new: true } // Return the updated document
     );
 
     if (!updatedProposal) {
       return res.status(404).json({ message: "Proposal not found" });
     }
+    console.log("200", updatedProposal.status, updatedProposal.subscriptionOn);
 
     res.status(200).json(updatedProposal);
   } catch (error) {
