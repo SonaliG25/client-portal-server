@@ -23,7 +23,7 @@ export const createUser = async (req, res) => {
     activeAccount,
     bannedAccount,
     accountManagers,
-    addresses,
+    address,
     purchaseHistory,
     subscription,
   } = req.body;
@@ -57,7 +57,7 @@ export const createUser = async (req, res) => {
       activeAccount,
       bannedAccount,
       accountManagers,
-      addresses,
+      address,
       purchaseHistory,
       subscription,
     });
@@ -96,10 +96,15 @@ export const getAllUsers = async (req, res) => {
     const searchCriteria = {
       role: "client",
       $or: [
-        { firstName: { $regex: search, $options: "i" } },
-        { lastName: { $regex: search, $options: "i" } },
-        { phone: { $regex: search, $options: "i" } },
-        { userType: { $regex: search, $options: "i" } },
+        { "address.state": { $regex: search, $options: "i" } },
+        { "address.country": { $regex: search, $options: "i" } },
+        { "address.city": { $regex: search, $options: "i" } },
+        { "businessDetails.companyType": { $regex: search, $options: "i" } },
+        { "businessDetails.clientName": { $regex: search, $options: "i" } },
+        { "address.street1": { $regex: search, $options: "i" } },
+        { "address.street2": { $regex: search, $options: "i" } },
+        { timeZone: { $regex: search, $options: "i" } },
+        { preferredContactMethod: { $regex: search, $options: "i" } },
       ],
     };
 

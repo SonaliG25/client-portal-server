@@ -1,5 +1,6 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
+const { Schema } = mongoose;
 const ticketSchema = new mongoose.Schema(
   {
     title: {
@@ -22,44 +23,77 @@ const ticketSchema = new mongoose.Schema(
       enum: ["Open", "In Progress", "Closed"],
       default: "Open",
     },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
-    updatedAt: {
-      type: Date,
-      default: Date.now,
-    },
     client: {
-      type: mongoose.Schema.Types.ObjectId, // Refers to the client who logged the ticket
-      ref: "Client",
-      required: true,
+      user: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+      name: {
+        type: String,
+        required: true,
+        trim: true,
+      },
+      email: {
+        type: String,
+        required: true,
+        trim: true,
+      },
     },
     assignedTo: {
-      type: mongoose.Schema.Types.ObjectId, // Refers to the agent or user responsible for the ticket
-      ref: "User",
+      user: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+      name: {
+        type: String,
+        // required: true,
+        trim: true,
+      },
+      email: {
+        type: String,
+        // required: true,
+        trim: true,
+      },
     },
     resolutionNotes: {
       type: String, // Any notes or updates for the resolution
       trim: true,
+      default: "",
     },
     attachments: [
       {
-        type: String, // Can store URLs of uploaded files or paths
+        filename: {
+          type: String,
+          required: true,
+        },
+        path: {
+          type: String,
+          required: true,
+        },
       },
     ],
     comments: [
       {
         user: {
-          type: mongoose.Schema.Types.ObjectId, // User who added the comment (admin/agent/client)
-          ref: "User",
+          userId: {
+            type: mongoose.Schema.Types.ObjectId, // User who added the comment (admin/agent/client)
+            ref: "User",
+          },
+          name: {
+            type: String,
+            default: "",
+          },
+          email: {
+            type: String,
+            default: "",
+          },
         },
         message: {
           type: String,
           required: true,
           trim: true,
         },
-        timestamp: {
+        createdAt: {
           type: Date,
           default: Date.now,
         },
@@ -71,4 +105,4 @@ const ticketSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Ticket", ticketSchema);
+export default mongoose.model("Ticket", ticketSchema);
