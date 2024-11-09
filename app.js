@@ -1,6 +1,6 @@
 // index.mjs
 import http from "http";
-import { Server } from "socket.io" // Importing the socket server setup
+import { Server } from "socket.io"; // Importing the socket server setup
 import path from "path";
 
 import express from "express";
@@ -14,15 +14,8 @@ import userRoutes from "./routes/userRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import subcriptionRoutes from "./routes/subscriptionRoutes.js";
 import invoiceRoutes from "./routes/invoiceRoutes.js";
-<<<<<<< HEAD
 import chatRoutes from "./routes/chatRoutes.js";
 import ticketRoutes from "./routes/ticketRoutes.js";
-=======
-
-// import uploadImageRouter from "./routes/uploadImageRoute.js";
-import chatRoutes from "./routes/chatRoutes.js"
-
->>>>>>> 48c7d94069afd1371bbd525907e77707a9c2aeae
 import uploadRouter from "./routes/uploadRoute.js";
 
 ///---End---///
@@ -40,12 +33,12 @@ const app = express();
 // // Attach Socket.IO to the HTTP server
 // io.attach(server);
 const PORT = process.env.PORT || 3000;
-const server = http.createServer(app)
+const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: "*", // Allow cross-origin requests, adjust as needed
   },
-})
+});
 
 // Middleware
 app.use(
@@ -97,7 +90,7 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("User disconnected:", socket.id);
   });
-})
+});
 
 app.use("/media", mediaRoutes);
 app.use("/proposal", proposalRoutes);
@@ -107,7 +100,7 @@ app.use("/product", productRoutes);
 app.use("/subscription", subcriptionRoutes);
 app.use("/invoice", invoiceRoutes);
 app.use("/upload", uploadRouter);
-app.use("/ticket", ticketRouter);
+app.use("/ticket", ticketRoutes);
 app.use("/category", categoryRouter);
 app.use("/chat", chatRoutes);
 app.use("/ticket", ticketRoutes);
