@@ -22,25 +22,31 @@ export const getSubscriptions = async (req, res) => {
     const searchQuery = search
       ? {
           $or: [
+            { isActive: { $regex: search, $options: "i" } },
             { "customer.name": { $regex: search, $options: "i" } },
-            { orderStatus: { $regex: search, $options: "i" } },
-            { "products.name": { $regex: search, $options: "i" } },
           ],
         }
       : {};
 
+    // Fetch subscriptions with search query, pagination, and sorting
     const subscriptions = await Subscription.find(searchQuery)
-      // .populate("customer")
+      .populate("customer")
+      .populate("proposalId")
+      .populate({
+        path: "products.productId", // populate productId inside products array
+        model: "Product", // the model name of the referenced product
+      })
       .skip((pageNumber - 1) * limitNumber)
       .limit(limitNumber)
       .sort({ createdAt: -1 })
       .exec();
 
-    const totalSubscriptions = await subscriptions.countDocuments(searchQuery);
+    // Count the total number of subscriptions matching the query
+    const totalSubscriptions = await Subscription.countDocuments(searchQuery);
 
     res.status(200).json({
       success: true,
-      data: totalSubscriptions,
+      data: subscriptions,
       currentPage: pageNumber,
       totalPages: Math.ceil(totalSubscriptions / limitNumber),
       totalSubscriptions,
