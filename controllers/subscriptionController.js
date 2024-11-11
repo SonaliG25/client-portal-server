@@ -61,7 +61,8 @@ export const getSubscriptions = async (req, res) => {
 export const getSubscription = async (req, res) => {
   try {
     const subscription = await Subscription.findById(req.params.id)
-      // .populate("customer")
+      .populate("customer")
+      .populate("products.productId")
       .exec();
     if (!subscription)
       return res.status(404).json({ message: "Subscription not found" });

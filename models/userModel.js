@@ -105,7 +105,7 @@ const userSchema = new Schema(
       default: "noPaymentYet",
     },
     // Additional fields as per the new requirements
-    allowLogin: { type: Boolean, default: true },
+    allowLogin: { type: Boolean, default: false },
     activeAccount: { type: Boolean, default: true },
     bannedAccount: { type: Boolean, default: false },
     // New accountManagers field
@@ -115,7 +115,7 @@ const userSchema = new Schema(
         ref: "AccountManager", // Referencing the AccountManager model
       },
     ],
-    
+
     address: {
       street1: { type: String, required: true },
       street2: { type: String, required: true },

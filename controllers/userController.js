@@ -275,25 +275,29 @@ export const loginUser = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
+    if (user.allowLogin) {
+      // Check if the password is correct
+      const isPasswordCorrect = await bcrypt.compare(password, user.password);
+      if (!isPasswordCorrect) {
+        return res.status(400).json({ message: "Invalid credentials" });
+      }
+      // Cookie age
+      const age = 1000 * 60 * 60 * 24 * 7;
+      // Generate JWT token
+      const token = jwt.sign(
+        { userId: user._id, email: user.email, role: user.role },
+        process.env.JWT_SECRET,
+        { expiresIn: age }
+      );
+      // const userInfo = { userId: user._id, email: user.email, role: user.role };
+      const userInfo = (({ password, ...rest }) => rest)(user.toObject());
 
-    // Check if the password is correct
-    const isPasswordCorrect = await bcrypt.compare(password, user.password);
-    if (!isPasswordCorrect) {
-      return res.status(400).json({ message: "Invalid credentials" });
+      return res
+        .status(200)
+        .json({ token, userId: user._id, userInfo: userInfo });
+    } else {
+      return res.status(404).json({ message: "You are not allowed to login" });
     }
-    // Cookie age
-    const age = 1000 * 60 * 60 * 24 * 7;
-    // Generate JWT token
-    const token = jwt.sign(
-      { userId: user._id, email: user.email, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: age }
-    );
-    const userInfo = { userId: user._id, email: user.email, role: user.role };
-
-    return res
-      .status(200)
-      .json({ token, userId: user._id, userInfo: userInfo });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

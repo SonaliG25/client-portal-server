@@ -100,6 +100,10 @@ const proposalSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    paymentLink: {
+      type: String,
+      required: true,
+    },
   },
   {
     timestamps: true, // Automatically creates createdAt and updatedAt fields
