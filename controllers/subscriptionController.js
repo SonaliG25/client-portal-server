@@ -61,12 +61,64 @@ export const getSubscriptions = async (req, res) => {
 // READ (Get a Single Subscription)
 export const getSubscription = async (req, res) => {
   try {
-    const subscription = await Subscription.find({ customer: req.user.userId })
-      // .populate("customer")
+    const { id } = req.params;
+
+    // Destructure pagination and search parameters from the query
+    const { page = 1, limit = 5, search = "" } = req.query;
+
+    // Calculate the skip value based on the page number and limit
+    const skip = (page - 1) * limit;
+
+    // Create a search query based on the search term
+    const searchQuery = search
+      ? {
+          $or: [
+            { customer: { $regex: search, $options: "i" } }, // Partial match for `customer` as a string
+            { proposalId: { $regex: search, $options: "i" } }, // Partial match for `customer` as a string
+            { subscriptionStatus: { $regex: search, $options: "i" } }, // Partial match for `subscriptionStatus` as a string
+            { totalAmountCurrency: { $regex: search, $options: "i" } }, // Partial match for `totalAmountCurrency` as a string
+            // Exact match for `finalAmount` if `search` is a number
+            !isNaN(Number(search)) ? { finalAmount: Number(search) } : null,
+            // Exact match for `subscriptionDurationInMonths` if `search` is a number
+            !isNaN(Number(search))
+              ? { subscriptionDurationInMonths: Number(search) }
+              : null,
+            {
+              subscriptionDate: {
+                $eq: new Date(search.split("/").reverse().join("-")), // Convert "DD/MM/YYYY" to "YYYY-MM-DD"
+              },
+            },
+          ].filter(Boolean), // Remove any null entries
+        }
+      : {}; // If no search term, return all results
+
+    // Fetch subscriptions with pagination and search query
+    const subscriptions = await Subscription.find({
+      customer: id,
+      ...searchQuery,
+    })
+      .skip(skip) // Skip records based on page
+      .limit(parseInt(limit)) // Limit the results based on the page size
       .exec();
-    if (!subscription)
-      return res.status(404).json({ message: "Subscription not found" });
-    return res.status(200).json(subscription);
+
+    // Count the total number of subscriptions for pagination
+    const totalSubscriptions = await Subscription.countDocuments({
+      customer: id,
+      ...searchQuery,
+    });
+
+    // Calculate total pages
+    const totalPages = Math.ceil(totalSubscriptions / limit);
+
+    if (!subscriptions || subscriptions.length === 0) {
+      return res.status(404).json({ message: "No subscriptions found" });
+    }
+
+    return res.status(200).json({
+      subscriptions,
+      totalPages, // Total number of pages
+      currentPage: page, // Current page
+    });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
