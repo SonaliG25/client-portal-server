@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Subscription from "../models/subscriptionModel.js"; // Import the Subscription model
 
 // CREATE Subscription
@@ -60,7 +61,7 @@ export const getSubscriptions = async (req, res) => {
 // READ (Get a Single Subscription)
 export const getSubscription = async (req, res) => {
   try {
-    const subscription = await Subscription.findById(req.params.id)
+    const subscription = await Subscription.find({ customer: req.user.userId })
       // .populate("customer")
       .exec();
     if (!subscription)
@@ -68,6 +69,52 @@ export const getSubscription = async (req, res) => {
     return res.status(200).json(subscription);
   } catch (error) {
     return res.status(500).json({ error: error.message });
+  }
+};
+
+// // READ (Get  Subscription by customer field)
+// export const getSubscriptionsByUser = async (req, res) => {
+//   try {
+//     const userId = req.user.userId ;
+
+//     if (!userId) {
+//       return res.status(400).json({ message: "User ID not found in request" });
+//     }
+
+//     console.log("User ID:", userId);
+
+//     // Find subscriptions based on customer userId
+//     const subscriptions = await Subscription.find({ customer: userId }).exec();
+
+//     // Check if there are no subscriptions found
+//     if (!subscriptions || subscriptions.length === 0) {
+//       return res
+//         .status(404)
+//         .json({ message: "No subscriptions found for this user" });
+//     }
+
+//     return res.status(200).json(subscriptions);
+//   } catch (error) {
+//     console.error("Error fetching subscriptions:", error); // Log full error for debugging
+//     return res.status(500).json({ error: error.message });
+//   }
+// };
+// Get all proposals
+export const getSubscriptionsByUser = async (req, res) => {
+  try {
+    console.log(req.body);
+    const userId = req.user.userId; // Assuming req.user.userId is the user ID
+
+    // Construct the query to filter subscriptions by the user ID
+    const query = { customer: userId };
+
+    // Find subscriptions matching the query
+    const subscriptions = await Subscription.find(query).populate("customer");
+
+    res.status(200).json(subscriptions);
+  } catch (error) {
+    console.error("Error fetching subscriptions:", error);
+    res.status(500).json({ message: "Error fetching subscriptions" });
   }
 };
 
