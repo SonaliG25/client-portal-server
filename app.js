@@ -2,9 +2,11 @@
 import http from "http";
 import { Server } from "socket.io"; // Importing the socket server setup
 import path from "path";
-
+import jwt from "jsonwebtoken";
 import express from "express";
 import mongoose from "mongoose";
+import Chat from "./models/chatModel.js";
+import User from "./models/userModel.js";
 ///Routes
 import categoryRouter from "./routes/categoryRoutes.js";
 import mediaRoutes from "./routes/mediaRoutes.js";
@@ -36,7 +38,9 @@ const PORT = process.env.PORT || 3000;
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "*", // Allow cross-origin requests, adjust as needed
+    rigin: "*", // Set to "*" or specific origin (e.g., "http://localhost:3001") for security
+    methods: ["GET", "POST"],
+    credentials: true, // Enable credentials if necessary
   },
 });
 
@@ -70,10 +74,31 @@ mongoose
   .catch((err) => console.error("Error connecting to MongoDB", err));
 
 // Routes
+io.use((socket, next) => {
+  console.log(socket.handshake.headers.token);
+  
+  const token = socket.handshake.headers.token; // Extract token from query
+
+  if (!token) {
+    return next(new Error("Authentication error: No token provided"));
+  }
+
+  try {
+    console.log("Decoded");
+    const decoded = jwt.verify(token, process.env.JWT_SECRET); // Validate token
+    console.log("Decoded ===",decoded);
+    
+    socket.user = decoded; // Attach user data to socket instance for later use
+    next(); // Allow connection
+  } catch (error) {
+    next(new Error("Authentication error: Invalid token",token));
+  }
+})
+
 
 io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
-
+  
   // Join a chat room
   socket.on("joinRoom", ({ userId, receiverId }) => {
     const room = [userId, receiverId].sort().join("_");
@@ -81,10 +106,62 @@ io.on("connection", (socket) => {
     console.log(`User joined room ${room}`);
   });
 
+  socket.on("markAsRead", async (data) => {
+    const { messageId, userId } = data;
+    
+    try {
+      // Find the message and update the `readBy` array
+      const updatedMessage = await Chat.findByIdAndUpdate(
+        messageId,
+        { 
+          $addToSet: { readBy: userId }, // Add userId to the readBy array
+          isRead: true, // Mark the message as read (optional, if you want a global read status)
+        },
+        { new: true }
+      );
+  
+      console.log("Message marked as read:", updatedMessage);
+  
+      // Optionally, notify other users in the chat room (e.g., sender) about read status
+      io.to(data.room).emit("messageRead", { messageId, userId });
+    } catch (error) {
+      console.error("Error marking message as read:", error);
+    }
+  });
+
+  
+
   // Handle sending a message
-  socket.on("sendMessage", (data) => {
+  socket.on("sendMessage", async(data) => {
     const room = [data.sender, data.receiver].sort().join("_");
+    
+    
     io.to(room).emit("receiveMessage", data); // Broadcast the message to the room
+    console.log("RoomData ==>",data);
+
+    try {
+      const newMessage = new Chat({
+        sender: data.sender,
+        receiver: data.receiver,
+        message: data.message,
+        room: room,
+        file: data.file,
+        createdAt: new Date(),
+        readBy: [], // Initially, no one has read the message
+        isRead: false, // Default status as unread
+      });
+      
+      await newMessage.save();
+      await User.findByIdAndUpdate(data.receiver, { updatedAt: new Date() });
+      
+      io.to(data.receiver).emit("newMessageNotification", {
+        sender: data.sender,
+        message: data.message,
+      });
+      console.log("Message saved to database:", newMessage);
+    } catch (error) {
+      console.error("Error saving message:", error);
+    }
   });
 
   socket.on("disconnect", () => {
@@ -108,6 +185,6 @@ app.get("/", (req, res) => {
   res.json("Api is running successfully");
 });
 // Start server
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

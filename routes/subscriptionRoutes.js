@@ -19,6 +19,12 @@ router.get(
 
 // Get a single order by ID
 router.get("/:id", isValidUser, SubscriptionController.getSubscription);
+// Get a subscription user by ID for a user
+router.get(
+  "/subscriptionsbyuser",
+  isValidUser,
+  SubscriptionController.getSubscriptionsByUser
+);
 
 // Update an order by ID
 router.patch("/:id", isAdmin, SubscriptionController.updateSubscription);

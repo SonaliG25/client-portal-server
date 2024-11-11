@@ -42,7 +42,7 @@ const paymentDetailsSchema = new Schema({
 const subscriptionSchema = new Schema(
   {
     customer: {
-      type: Schema.Types.ObjectId,
+     type: Schema.Types.ObjectId,
       ref: "User", // Assuming you have a User schema
       required: true,
     },
