@@ -59,18 +59,12 @@ const subscriptionSchema = new Schema(
       type: Boolean,
       required: true,
     },
-
     subscriptionStatus: {
       type: String,
-      enum: ["processing", "completed", "cancelled"],
+      enum: ["processing", "active", "inactive", "cancelled"],
       default: "processing",
       required: true,
     },
-    // shippingCost: {
-    //   type: Number,
-    //   default: 0,
-    //   min: 0,
-    // },
     finalAmount: {
       type: Number,
       required: true, // Total amount including shipping and products
@@ -81,7 +75,12 @@ const subscriptionSchema = new Schema(
       required: true,
       default: "USD", // Currency for total amount
     },
-    subscriptionDate: {
+    subscriptionStartDate: {
+      type: Date,
+      default: Date.now,
+    },
+
+    subscriptionEndDate: {
       type: Date,
       default: Date.now,
     },

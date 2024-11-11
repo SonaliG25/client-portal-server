@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import Subscription from "../models/subscriptionModel.js"; // Import the Subscription model
 
 // CREATE Subscription

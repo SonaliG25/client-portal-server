@@ -7,7 +7,7 @@ const router = express.Router();
 // Create a new ticket
 router.post("/new", isValidUser, ticketController.createTicket);
 router.post("/comment/:id", isValidUser, ticketController.addCommentToTicket);
-router.post(
+router.patch(
   "/resolutionNotes/:id",
   isValidUser,
   ticketController.addResolutionToTicket

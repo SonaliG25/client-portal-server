@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken";
 import express from "express";
 import mongoose from "mongoose";
 import Chat from "./models/chatModel.js";
+import User from "./models/userModel.js";
 ///Routes
 import categoryRouter from "./routes/categoryRoutes.js";
 import mediaRoutes from "./routes/mediaRoutes.js";
@@ -105,6 +106,29 @@ io.on("connection", (socket) => {
     console.log(`User joined room ${room}`);
   });
 
+  socket.on("markAsRead", async (data) => {
+    const { messageId, userId } = data;
+    
+    try {
+      // Find the message and update the `readBy` array
+      const updatedMessage = await Chat.findByIdAndUpdate(
+        messageId,
+        { 
+          $addToSet: { readBy: userId }, // Add userId to the readBy array
+          isRead: true, // Mark the message as read (optional, if you want a global read status)
+        },
+        { new: true }
+      );
+  
+      console.log("Message marked as read:", updatedMessage);
+  
+      // Optionally, notify other users in the chat room (e.g., sender) about read status
+      io.to(data.room).emit("messageRead", { messageId, userId });
+    } catch (error) {
+      console.error("Error marking message as read:", error);
+    }
+  });
+
   
 
   // Handle sending a message
@@ -120,12 +144,15 @@ io.on("connection", (socket) => {
         sender: data.sender,
         receiver: data.receiver,
         message: data.message,
-         room: room,
-         file:data.file,
-        createdAt: new Date()
+        room: room,
+        file: data.file,
+        createdAt: new Date(),
+        readBy: [], // Initially, no one has read the message
+        isRead: false, // Default status as unread
       });
       
       await newMessage.save();
+      await User.findByIdAndUpdate(data.receiver, { updatedAt: new Date() });
       
       io.to(data.receiver).emit("newMessageNotification", {
         sender: data.sender,
