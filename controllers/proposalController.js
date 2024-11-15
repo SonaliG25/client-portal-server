@@ -30,7 +30,7 @@ export const createProposal = async (req, res) => {
       discountOnGrandTotal,
       finalAmount,
       attachments,
-      paymentLink,
+      // paymentLink,
     } = proposalData;
 
     console.log("Recipient:", recipient);
@@ -62,7 +62,7 @@ export const createProposal = async (req, res) => {
         finalAmount,
         attachments,
         status: "Sent",
-        paymentLink,
+        // paymentLink,
       });
       const savedProposal = await newProposal.save();
 
