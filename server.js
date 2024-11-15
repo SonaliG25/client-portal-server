@@ -19,8 +19,8 @@ import invoiceRoutes from "./routes/invoiceRoutes.js";
 import chatRoutes from "./routes/chatRoutes.js";
 import ticketRoutes from "./routes/ticketRoutes.js";
 import uploadRouter from "./routes/uploadRoute.js";
-import helmet from "helmet";
-// import cors from "cors";
+// import helmet from "helmet";
+import cors from "cors";
 ///---End---///
 import "dotenv/config";
 // import path from "path";
@@ -38,22 +38,22 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const server = http.createServer(app);
 const io = new Server(server, {
-  // cors: {
-  //   rigin: "*", // Set to "*" or specific origin (e.g., "http://localhost:3001") for security
-  //   methods: ["GET", "POST"],
-  //   credentials: true, // Enable credentials if necessary
-  // },
+  cors: {
+    origin: "http://4.206.74.148/", // Set to "*" or specific origin (e.g., "http://localhost:3001") for security
+    methods: ["GET", "POST"],
+    credentials: true, // Enable credentials if necessary
+  },
 });
 
 // Middleware
-// app.use(
-//   cors({
-//     origin: "*", // "http://localhost:3001", // specify the allowed origin
-//     methods: ["GET", "POST", "PATCH", "DELETE"], // specify the allowed HTTP methods
-//     allowedHeaders: ["Content-Type", "Authorization", "token", "Accept"], // specify the allowed headers
-//     credentials: true, // enable credentials (cookies, authorization headers) cross-origin
-//   })
-// );
+app.use(
+  cors({
+    origin: "http://4.206.74.148/", // "http://localhost:3001", // specify the allowed origin
+    methods: ["GET", "POST", "PATCH", "DELETE"], // specify the allowed HTTP methods
+    allowedHeaders: ["Content-Type", "Authorization", "token", "Accept"], // specify the allowed headers
+    credentials: true, // enable credentials (cookies, authorization headers) cross-origin
+  })
+);
 
 // Middleware to parse JSON request bodies
 app.use(express.json());
